@@ -1,7 +1,6 @@
 import "BlindNinjaCore"
 
-pub fun main(address: Address, levelName: String): AnyStruct {
-  // get initial level
+pub fun main(address: Address, levelName: String, moveSequence: [String]): AnyStruct {
   let levelCollectionRef = getAccount(address)
     .getCapability<&{BlindNinjaCore.LevelCollectionPublic}>(/public/levelCollection)
     .borrow()
@@ -9,5 +8,5 @@ pub fun main(address: Address, levelName: String): AnyStruct {
   
   let level = levelCollectionRef.getLevel(levelName)
 
-  return level
+  
 }

@@ -42,16 +42,70 @@ pub contract BlindNinjaCore {
 
   }
 
+  pub struct ActiveLevel {
+    pub let map: {Map}
+    pub let gameObjects: [{GameObject}]
+
+    init(map: {Map}, gameObjects: [{GameObject}]) {
+      self.map = map
+      self.gameObjects = gameObjects
+    }
+  }
+
   // ------------------------------------------
   // Begin Level interface
   // ------------------------------------------
   pub resource interface Level {
-    pub let name: String
-    pub let map: {Map}
-    pub let gameObjects: [{GameObject}]
-    pub let mechanics: [{GameMechanic}]
-    pub let winConditions: [{WinCondition}]
-    pub let visuals: [{VisualElement}]
+    access(all) let name: String
+
+    // The map and gameobjects can and likely will change during
+    //  a game to represent changes in view or gameobject,
+    // so when a game starts they are copied to a new
+    // struct for the 'ActiveLevel'
+    access(all) let map: {Map}
+    access(all) let gameObjects: [{GameObject}]
+
+    // ------ Static modifiers that control the level --------
+    // the below are static objects, and not included in an 'activelevel'
+
+    // Mechanics are run on every tick, according to the type of mechanic.
+    //  i.e. a collision mechanic will be run whenever a collision occurs between
+    //       2 game objects.
+    // TODO: Determine all type of mechanics, and plug them in appropriately.
+    access(all) let mechanics: [{GameMechanic}]
+
+    // Win conditions decide how a game could be won.
+    // The game's tick will always check if the win conditions are satisfied
+    // on each iteration.
+    access(all) let winConditions: [{WinCondition}]
+
+    // Static visuals that do not tick, and are in the background of the game.
+    // This also can be used to associate an ID to a visual element for it.
+    // This allows you to decouple the gameobjects from their visual counterpart.
+    access(all) let visuals: [{VisualElement}]
+
+    // ------ End Static modifiers --------
+
+    // ------ Game Execution --------
+    access(all) fun executeLevel(ninja: {GameObject}, sequence: [String]): [ActiveLevel] {
+      var results: [ActiveLevel] = []
+      var i: Int = 0
+      let activeLevel = BlindNinjaCore.ActiveLevel(
+        map: self.map,
+        gameObjects: [ninja].concat(self.gameObjects)
+      )
+      while (i < sequence.length) {
+        let curResult = self.tickLevel(activeLevel: activeLevel, curSequence: sequence[i])
+        results.append(curResult)
+        i = i + 1
+      }
+
+      return results
+    }
+
+    access(all) fun tickLevel(activeLevel: ActiveLevel, curSequence: String): ActiveLevel
+    // ------ End Game Execution -------
+  
   }
 
   // ------------------------------------------
@@ -87,6 +141,11 @@ pub contract BlindNinjaCore {
       return (&self.levels[name] as &{Level}?)!
     }
 
+    pub fun removeLevel(_ name: String): @{Level}? {
+      let level <- self.levels.remove(key: name)
+      return <-level
+    }
+
     pub fun getLevelNames(): [String] {
       return self.levels.keys
     }
@@ -99,28 +158,5 @@ pub contract BlindNinjaCore {
   // ------------------------------------------
   // End level collection
   // ------------------------------------------
-
-  // ------------------------------------------
-  //  Public game engine functions
-  // ------------------------------------------
-
-  pub fun getInitialBoard(level: &{Level}): AnyStruct {
-    let res: {String: AnyStruct} = {}
-    // Provide a map of 'GameObject ID': 'Visual'
-    // provide a list of extra visuals and their locations on a map
-    
-    return res
-  }
-
-  pub fun tickBoard(level: &{Level}, tickCount: UInt64, objects: [AnyStruct], sequence: [String], state: {String: String}): AnyStruct {
-    let res: {String: String} = {}
-    // return all updated objects
-    // if applicable, return any extras
-    // return the state
-    return res
-  }
-
-  // TODO: Make a 'levelCollection' to make it easy for an account to expose many levels at once.
-
 }
 

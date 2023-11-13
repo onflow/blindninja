@@ -1,13 +1,14 @@
 import "BlindNinjaCore"
 
 pub contract ComposableLevel {
+  
   pub resource Level: BlindNinjaCore.Level {
-    pub let name: String
-    pub let map: {BlindNinjaCore.Map}
-    pub let gameObjects: [{BlindNinjaCore.GameObject}]
-    pub let mechanics: [{BlindNinjaCore.GameMechanic}]
-    pub let visuals: [{BlindNinjaCore.VisualElement}]
-    pub let winConditions: [{BlindNinjaCore.WinCondition}]
+    access(all) let name: String
+    access(all) let map: {BlindNinjaCore.Map}
+    access(all) let gameObjects: [{BlindNinjaCore.GameObject}]
+    access(all) let mechanics: [{BlindNinjaCore.GameMechanic}]
+    access(all) let visuals: [{BlindNinjaCore.VisualElement}]
+    access(all) let winConditions: [{BlindNinjaCore.WinCondition}]
 
     init(
       name: String,
@@ -24,5 +25,28 @@ pub contract ComposableLevel {
       self.visuals = visuals
       self.winConditions = winConditions
     }
+    
+    access(all) fun tickLevel(activeLevel: BlindNinjaCore.ActiveLevel, curSequence: String): BlindNinjaCore.ActiveLevel {
+      return activeLevel
+    }
+  }
+
+
+  pub fun createLevel(
+    name: String,
+    map: {BlindNinjaCore.Map},
+    gameObjects: [{BlindNinjaCore.GameObject}],
+    mechanics: [{BlindNinjaCore.GameMechanic}],
+    visuals: [{BlindNinjaCore.VisualElement}],
+    winConditions: [{BlindNinjaCore.WinCondition}]
+  ): @Level {
+    return <- create Level(
+      name: name,
+      map: map,
+      gameObjects: gameObjects,
+      mechanics: mechanics,
+      visuals: visuals,
+      winConditions: winConditions,
+    )
   }
 }

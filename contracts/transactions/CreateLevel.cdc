@@ -4,13 +4,13 @@ import "ComposableLevel"
 
 transaction(levelName: String) {
   prepare(signer: AuthAccount) {
-    if !signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection) {
+    if signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection) == nil {
       let newLevelCollection <- BlindNinjaCore.createLevelCollection()
-      signer.save(<-levelCollection, to: /storage/levelCollection)
-      signer.link<&BlindNinjaCore.LevelCollectionPublic>(/public/levelCollection, target: /storage/levelCollection)
+      signer.save(<-newLevelCollection, to: /storage/levelCollection)
+      signer.link<&{BlindNinjaCore.LevelCollectionPublic}>(/public/levelCollection, target: /storage/levelCollection)
     }
 
-    let levelCollection: &BlindNinjaCore.LevelCollection = signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection)
+    let levelCollection: &BlindNinjaCore.LevelCollection = signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection)!
 
     let level <- ComposableLevel.createLevel(
       name: levelName,
@@ -22,6 +22,12 @@ transaction(levelName: String) {
       visuals: [],
       winConditions: [],
     )
+
+    let levelNames = levelCollection.getLevelNames()
+    if levelNames.length > 0 {
+      let oldLevel <- levelCollection.removeLevel(levelName)
+      destroy oldLevel
+    }
 
     levelCollection.addLevel(<-level)
   }
