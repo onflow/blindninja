@@ -1,5 +1,5 @@
 import "BlindNinjaCore"
-import "SampleLevel"
+import "GenericLevelComponents"
 import "ComposableLevel"
 
 transaction(levelName: String) {
@@ -11,13 +11,19 @@ transaction(levelName: String) {
     }
 
     let levelCollection: &BlindNinjaCore.LevelCollection = signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection)!
+    let ninja = GenericLevelComponents.GenericNinja(id: 1)
+    ninja.setReferencePoint([5,5])
+
+    //let wall1 = GenericLevelComponents.Wall(id: 2)
+    //let flag1 = GenericLevelComponents.
+
+    let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
+    gameObjects[0] = ninja
 
     let level <- ComposableLevel.createLevel(
       name: levelName,
-      map: SampleLevel.Map(),
-      gameObjects: [
-        SampleLevel.Wall(1)
-      ],
+      map: GenericLevelComponents.Map(),
+      gameObjects: gameObjects,
       mechanics: [],
       visuals: [],
       winConditions: [],

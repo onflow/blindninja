@@ -8,5 +8,6 @@ pub fun main(address: Address, levelName: String, moveSequence: [String]): AnySt
   
   let level = levelCollectionRef.getLevel(levelName)
 
-  
+  let ticks: [BlindNinjaCore.ActiveLevel] = level.executeLevel(sequence: moveSequence)
+  return ticks
 }

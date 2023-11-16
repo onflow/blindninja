@@ -1,7 +1,19 @@
 import "BlindNinjaCore"
 import "ComposableLevel"
 
-pub contract SampleLevel {
+pub contract GenericLevelComponents {
+
+  pub struct GenericNinja: BlindNinjaCore.GameObject {
+    pub var id: UInt64
+    pub var type: String
+    pub var referencePoint: [Int]
+
+    init(id: UInt64) {
+      self.id = id
+      self.type = "BlindNinja"
+      self.referencePoint = [0,0]
+    }
+  }
 
   pub struct Map: BlindNinjaCore.Map {
     pub let anchorX: Int
@@ -17,19 +29,12 @@ pub contract SampleLevel {
     }
   }
 
+/* 
   pub struct Wall: BlindNinjaCore.GameObject {
     pub var id: UInt64
     pub var type: String
     pub var doesTick: Bool
     pub var referencePoint: [Int]
-
-    pub fun toMap(): {String: String} {
-      let ret: {String: String} = {}
-      return ret
-    }
-    pub fun fromMap(_ map: {String: String}) {
-      // do nothing
-    }
 
     pub fun tick(
       tickCount: UInt64,
@@ -48,4 +53,31 @@ pub contract SampleLevel {
       self.referencePoint = [0,0]
     }
   }
+
+  pub struct Flag: BlindNinjaCore.GameObject {
+    pub var id: UInt64
+    pub var type: String
+    pub var doesTick: Bool
+    pub var referencePoint: [Int]
+
+    pub fun tick(
+      tickCount: UInt64,
+      level: &{BlindNinjaCore.Level},
+      callbacks: {
+        String: ((AnyStruct?): AnyStruct?)
+      }
+    ) {
+      // do nothing
+    }
+
+    init(id: UInt64) {
+      self.id = id
+      self.type = "Flag"
+      self.doesTick = false
+      self.referencePoint = [0,0]
+    }
+  }
+  */
+
+  
 }

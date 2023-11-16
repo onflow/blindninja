@@ -26,6 +26,7 @@
 				"emulator": "ee82856bf20e2aa6"
 			}
 		},
+		"GenericLevelComponents": "contracts/GenericLevelComponents.cdc",
 		"MetadataViews": {
 			"source": "",
 			"aliases": {
@@ -50,7 +51,6 @@
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
-		"SampleLevel": "contracts/SampleLevel.cdc",
 		"ViewResolver": {
 			"source": "",
 			"aliases": {
@@ -78,7 +78,7 @@
 			"default": [
 				"BlindNinjaCore",
 				"ComposableLevel",
-				"SampleLevel"
+				"GenericLevelComponents"
 			]
 		}
 	}

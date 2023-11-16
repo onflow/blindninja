@@ -11,23 +11,11 @@ pub contract BlindNinjaCore {
   pub struct interface GameObject {
     pub var id: UInt64
     pub var type: String
-    pub var doesTick: Bool
     pub var referencePoint: [Int]
-
-    pub fun toMap(): {String: String}
-    pub fun fromMap(_ map: {String: String})
 
     pub fun setReferencePoint(_ newReferencePoint: [Int]) {
       self.referencePoint = newReferencePoint
     }
-
-    pub fun tick(
-      tickCount: UInt64,
-      level: &{Level},
-      callbacks: {
-        String: ((AnyStruct?): AnyStruct?)
-      }
-    )
   }
 
   pub struct interface GameMechanic {
@@ -42,13 +30,75 @@ pub contract BlindNinjaCore {
 
   }
 
+  // ------------------------------------------
+  // Begin GameBoard struct
+  // ------------------------------------------
+  pub struct GameBoard {
+    pub var board: {Int: {Int: [{GameObject}]}}
+    pub var newCollisionPoints: [[Int]]
+
+    access(self) fun addToBoard(_ gameObject: {GameObject}) {
+      let referencePoint: [Int] = gameObject.referencePoint
+      let x = referencePoint[0]!
+      let y = referencePoint[1]!
+
+      if (!self.board.containsKey(x)) {
+        self.board[x] = {}
+      }
+      var column = self.board[x]!
+      if (column[y] == nil) {
+        column[y] = []
+      }
+      if (column[y]!.length > 0) {
+        self.newCollisionPoints.append(referencePoint)
+      }
+      column[y]!.append(gameObject)
+      self.board[x] = column
+    }
+
+    access(self) fun clearFromBoard(_ referencePoint: [Int]) {
+      let x = referencePoint[0]!
+      let y = referencePoint[1]!
+      var column = self.board[x]!
+      column[y] = []
+      self.board[x] = column
+    }
+
+    // Add the given gameobject to the gameboard
+    pub fun add(_ gameObject: {GameObject}?) {
+      if (gameObject != nil) {
+        self.addToBoard(gameObject!)
+      }
+    }
+
+    // Remove this object from the gameboard
+    pub fun remove(_ gameObject: {GameObject}?) {
+      if (gameObject != nil) {
+        self.clearFromBoard(gameObject!.referencePoint)
+      }
+    }
+
+    pub fun clearCollisionPoints() {
+      self.newCollisionPoints = []
+    }
+
+    init() {
+      self.board = {}
+      self.newCollisionPoints = []
+    }
+  }
+
   pub struct ActiveLevel {
     pub let map: {Map}
-    pub let gameObjects: [{GameObject}]
+    pub let gameObjects: {Int: {GameObject}}
+    pub let gameboard: GameBoard
+    pub let hasWonGame: Bool
 
-    init(map: {Map}, gameObjects: [{GameObject}]) {
+    init(map: {Map}, gameObjects: {Int: {GameObject}}, gameboard: GameBoard, hasWonGame: Bool) {
       self.map = map
       self.gameObjects = gameObjects
+      self.gameboard = gameboard
+      self.hasWonGame = hasWonGame
     }
   }
 
@@ -63,7 +113,7 @@ pub contract BlindNinjaCore {
     // so when a game starts they are copied to a new
     // struct for the 'ActiveLevel'
     access(all) let map: {Map}
-    access(all) let gameObjects: [{GameObject}]
+    access(all) let gameObjects: {Int: {GameObject}}
 
     // ------ Static modifiers that control the level --------
     // the below are static objects, and not included in an 'activelevel'
@@ -84,26 +134,43 @@ pub contract BlindNinjaCore {
     // This allows you to decouple the gameobjects from their visual counterpart.
     access(all) let visuals: [{VisualElement}]
 
+    access(all) let gameboard: GameBoard
+
     // ------ End Static modifiers --------
 
     // ------ Game Execution --------
-    access(all) fun executeLevel(ninja: {GameObject}, sequence: [String]): [ActiveLevel] {
-      var results: [ActiveLevel] = []
-      var i: Int = 0
+    access(all) fun getInitialLevel(): ActiveLevel {
       let activeLevel = BlindNinjaCore.ActiveLevel(
         map: self.map,
-        gameObjects: [ninja].concat(self.gameObjects)
+        gameObjects: self.gameObjects,
+        gameboard: self.gameboard,
+        hasWonGame: false
       )
+      return activeLevel
+    }
+
+    access(all) fun executeLevel(sequence: [String]): [ActiveLevel] {
+      var results: [ActiveLevel] = []
+      results.append(self.getInitialLevel())
+      var i: Int = 0
+      var hasWon = false
+      var lastResult = results[0]!
       while (i < sequence.length) {
-        let curResult = self.tickLevel(activeLevel: activeLevel, curSequence: sequence[i])
-        results.append(curResult)
+        hasWon = hasWon || self.tickLevel(curSequence: sequence[i])
+        let levelResults: ActiveLevel = ActiveLevel(
+          map: self.map,
+          gameObjects: self.gameObjects,
+          gameboard: self.gameboard,
+          hasWonGame: hasWon
+        )
+        results.append(levelResults)
         i = i + 1
       }
-
       return results
     }
 
-    access(all) fun tickLevel(activeLevel: ActiveLevel, curSequence: String): ActiveLevel
+    // Returns true if the game has been won.
+    access(all) fun tickLevel(curSequence: String): Bool
     // ------ End Game Execution -------
   
   }
