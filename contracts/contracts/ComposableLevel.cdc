@@ -12,6 +12,7 @@ pub contract ComposableLevel {
     access(all) let visuals: [{BlindNinjaCore.VisualElement}]
     access(all) let winConditions: [{BlindNinjaCore.WinCondition}]
     access(all) let gameboard: BlindNinjaCore.GameBoard
+    access(all) let state: {String: AnyStruct}
 
     init(
       name: String,
@@ -28,36 +29,25 @@ pub contract ComposableLevel {
       self.visuals = visuals
       self.winConditions = winConditions
       self.gameboard = BlindNinjaCore.GameBoard()
+      self.state = {}
       for object in self.gameObjects.values {
         self.gameboard.add(object)
       }
     }
 
-    access(self) fun handleNinjaMovement(_ curSequence: String) {
-      if (curSequence == "ArrowDown") {
-        
-      }
-      if (curSequence == "ArrowUp") {
-
-      }
-      if (curSequence == "ArrowRight") {
-
-      }
-      if (curSequence == "ArrowLeft") {
-
-      }
-    }
-    
-    access(all) fun tickLevel(curSequence: String): Bool {
-      self.handleNinjaMovement(curSequence)
+    access(all) fun tickLevel(level: &BlindNinjaCore.LevelSaveState): Bool {
+      let curSequence: String = level.sequence[level.curSequenceIndex]!
       
-
       // each tick should pass in the set of mechanics
+      for m in self.mechanics {
+        m.tick(level)
+      }
 
       // all win conditions should be checked after the above is complete.
-
+      
       return false
     }
+
   }
 
   pub fun createLevel(

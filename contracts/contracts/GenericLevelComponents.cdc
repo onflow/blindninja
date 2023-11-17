@@ -3,6 +3,39 @@ import "ComposableLevel"
 
 pub contract GenericLevelComponents {
 
+  // Provide a ninja's ID, and the ninja will move according to the current sequence number each tick
+  pub struct NinjaMovement: BlindNinjaCore.GameMechanic {
+    pub let name: String
+    pub let ninjaID: Int
+
+    pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
+      let curSequence = level.sequence[level.curSequenceIndex]!
+      let prevNinja = level.gameObjects[self.ninjaID]!
+      let newNinja = level.gameObjects[self.ninjaID]!
+      let existingPoint = newNinja.referencePoint
+      if (curSequence == "ArrowDown") {
+        newNinja.setReferencePoint([existingPoint[0]!, existingPoint[1]! + 1])
+      }
+      if (curSequence == "ArrowUp") {
+        newNinja.setReferencePoint([existingPoint[0]!, existingPoint[1]! - 1])
+      }
+      if (curSequence == "ArrowRight") {
+        newNinja.setReferencePoint([existingPoint[0]! + 1, existingPoint[1]!])
+      }
+      if (curSequence == "ArrowLeft") {
+        newNinja.setReferencePoint([existingPoint[0]! - 1, existingPoint[1]!])
+      }
+      level.gameboard.remove(prevNinja)
+      level.gameboard.add(newNinja)
+      level.setGameObject(self.ninjaID, newNinja)
+    }
+
+    init(ninjaID: Int) {
+      self.name = "Ninja Movement Mechanic"
+      self.ninjaID = ninjaID
+    }
+  }
+
   pub struct GenericNinja: BlindNinjaCore.GameObject {
     pub var id: UInt64
     pub var type: String

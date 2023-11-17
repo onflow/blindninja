@@ -14,17 +14,19 @@ transaction(levelName: String) {
     let ninja = GenericLevelComponents.GenericNinja(id: 1)
     ninja.setReferencePoint([5,5])
 
-    //let wall1 = GenericLevelComponents.Wall(id: 2)
-    //let flag1 = GenericLevelComponents.
 
     let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
     gameObjects[0] = ninja
+
+    let moveMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.NinjaMovement(ninjaID: 0)
 
     let level <- ComposableLevel.createLevel(
       name: levelName,
       map: GenericLevelComponents.Map(),
       gameObjects: gameObjects,
-      mechanics: [],
+      mechanics: [
+        moveMechanic
+      ],
       visuals: [],
       winConditions: [],
     )

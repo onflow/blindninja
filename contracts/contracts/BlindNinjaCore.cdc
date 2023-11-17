@@ -19,11 +19,12 @@ pub contract BlindNinjaCore {
   }
 
   pub struct interface GameMechanic {
-    
+    pub let name: String
+    pub fun tick(_ level: &BlindNinjaCore.LevelSaveState)
   }
 
   pub struct interface WinCondition {
-
+    pub fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool
   }
 
   pub struct interface VisualElement {
@@ -88,16 +89,14 @@ pub contract BlindNinjaCore {
     }
   }
 
-  pub struct ActiveLevel {
+  pub struct LevelResult {
     pub let map: {Map}
     pub let gameObjects: {Int: {GameObject}}
-    pub let gameboard: GameBoard
     pub let hasWonGame: Bool
 
-    init(map: {Map}, gameObjects: {Int: {GameObject}}, gameboard: GameBoard, hasWonGame: Bool) {
+    init(map: {Map}, gameObjects: {Int: {GameObject}}, hasWonGame: Bool) {
       self.map = map
       self.gameObjects = gameObjects
-      self.gameboard = gameboard
       self.hasWonGame = hasWonGame
     }
   }
@@ -111,17 +110,13 @@ pub contract BlindNinjaCore {
     // The map and gameobjects can and likely will change during
     //  a game to represent changes in view or gameobject,
     // so when a game starts they are copied to a new
-    // struct for the 'ActiveLevel'
+    // struct for the 'LevelResult'
     access(all) let map: {Map}
     access(all) let gameObjects: {Int: {GameObject}}
 
     // ------ Static modifiers that control the level --------
-    // the below are static objects, and not included in an 'activelevel'
 
-    // Mechanics are run on every tick, according to the type of mechanic.
-    //  i.e. a collision mechanic will be run whenever a collision occurs between
-    //       2 game objects.
-    // TODO: Determine all type of mechanics, and plug them in appropriately.
+    // Mechanics are run on every tick, in the order of the given array.
     access(all) let mechanics: [{GameMechanic}]
 
     // Win conditions decide how a game could be won.
@@ -134,45 +129,100 @@ pub contract BlindNinjaCore {
     // This allows you to decouple the gameobjects from their visual counterpart.
     access(all) let visuals: [{VisualElement}]
 
+    access(all) let state: {String: AnyStruct}
+
     access(all) let gameboard: GameBoard
 
     // ------ End Static modifiers --------
 
     // ------ Game Execution --------
-    access(all) fun getInitialLevel(): ActiveLevel {
-      let activeLevel = BlindNinjaCore.ActiveLevel(
+    access(all) fun getInitialLevel(): LevelResult {
+      let activeLevel = BlindNinjaCore.LevelResult(
         map: self.map,
         gameObjects: self.gameObjects,
-        gameboard: self.gameboard,
         hasWonGame: false
       )
       return activeLevel
     }
 
-    access(all) fun executeLevel(sequence: [String]): [ActiveLevel] {
-      var results: [ActiveLevel] = []
-      results.append(self.getInitialLevel())
+    access(all) fun executeFullLevel(level: &LevelSaveState): [LevelResult] {
+      let sequence = level.sequence
+      
+      level.addResult(self.getInitialLevel())
+
       var i: Int = 0
       var hasWon = false
-      var lastResult = results[0]!
       while (i < sequence.length) {
-        hasWon = hasWon || self.tickLevel(curSequence: sequence[i])
-        let levelResults: ActiveLevel = ActiveLevel(
-          map: self.map,
-          gameObjects: self.gameObjects,
-          gameboard: self.gameboard,
+        hasWon = hasWon || self.tickLevel(level: level)
+        level.incrementSequenceIndex()
+        let curResult = LevelResult(
+          map: level.map,
+          gameObjects: level.gameObjects,
           hasWonGame: hasWon
         )
-        results.append(levelResults)
+        level.addResult(curResult)
+        if (hasWon) {
+          return level.tickResults
+        }
         i = i + 1
       }
-      return results
+      return level.tickResults
     }
 
     // Returns true if the game has been won.
-    access(all) fun tickLevel(curSequence: String): Bool
+    access(all) fun tickLevel(level: &LevelSaveState): Bool
     // ------ End Game Execution -------
   
+  }
+
+
+  pub resource LevelSaveState {
+    access(all) let referenceLevelID: UInt64
+    access(all) let map: {Map}
+    access(all) let gameObjects: {Int: {GameObject}}
+    access(all) let gameboard: GameBoard
+    access(all) let state: {String: AnyStruct}
+    access(all) let tickResults: [LevelResult]
+    access(all) let sequence: [String]
+    access(all) var curSequenceIndex: Int
+
+    access(all) fun incrementSequenceIndex() {
+      self.curSequenceIndex = self.curSequenceIndex + 1
+    }
+
+    access(all) fun setState(_ key: String,_ value: AnyStruct) {
+      self.state[key] = value
+    }
+
+    access(all) fun addResult(_ levelResult: LevelResult) {
+      self.tickResults.append(levelResult)
+    }
+
+    access(all) fun setGameObject(_ id: Int, _ gameObject: {GameObject}) {
+      self.gameObjects[id] = gameObject
+    }
+
+    init(referenceLevelID: UInt64, map: {Map}, gameObjects: {Int: {GameObject}}, gameboard: GameBoard, state: {String: AnyStruct}, sequence: [String]) {
+      self.referenceLevelID = referenceLevelID
+      self.map = map
+      self.gameObjects = gameObjects
+      self.gameboard = gameboard
+      self.state = state
+      self.tickResults = []
+      self.sequence = sequence
+      self.curSequenceIndex = 0
+    }
+  }
+
+  pub fun createLevelSaveState(_ level: &{Level}, _ sequence: [String]): @LevelSaveState {
+    return <- create LevelSaveState(
+      referenceLevelID: level.uuid,
+      map: level.map,
+      gameObjects: level.gameObjects,
+      gameboard: level.gameboard,
+      state: level.state,
+      sequence: sequence
+    )
   }
 
   // ------------------------------------------
