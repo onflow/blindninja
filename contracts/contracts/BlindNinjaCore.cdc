@@ -1,6 +1,7 @@
 
 pub contract BlindNinjaCore {
 
+  // Interface for defining the map structure in the game.
   pub struct interface Map {
     pub let anchorX: Int
     pub let anchorY: Int
@@ -8,32 +9,34 @@ pub contract BlindNinjaCore {
     pub let viewHeight: Int
   }
 
+  // Interface for game objects within the game environment.
   pub struct interface GameObject {
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
 
+    // Function to set a new reference point for the game object.
     pub fun setReferencePoint(_ newReferencePoint: [Int]) {
       self.referencePoint = newReferencePoint
     }
   }
 
+  // Interface for game mechanics which can affect the game state.
   pub struct interface GameMechanic {
     pub let name: String
     pub fun tick(_ level: &BlindNinjaCore.LevelSaveState)
   }
 
+  // Interface for defining conditions to win the game.
   pub struct interface WinCondition {
     pub fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool
   }
 
+  // Interface for visual elements within the game.
   pub struct interface VisualElement {
-
   }
 
-  // ------------------------------------------
-  // Begin GameBoard struct
-  // ------------------------------------------
+  // Struct representing the game board, handling spatial arrangement of objects.
   pub struct GameBoard {
     // Map of x coordinate to y coordinate to object id
     pub var board: {Int: {Int: [UInt64]}}
@@ -58,12 +61,21 @@ pub contract BlindNinjaCore {
       self.board[x] = column
     }
 
-    access(self) fun clearFromBoard(_ referencePoint: [Int]) {
+    access(self) fun clearFromBoard(_ gameObject: {GameObject}) {
+      let referencePoint = gameObject.referencePoint
       let x = referencePoint[0]!
       let y = referencePoint[1]!
-      var column = self.board[x]!
-      column[y] = []
-      self.board[x] = column
+
+      var newIDs: [UInt64] = []
+      var row = self.board[x]!
+      var column = row[y]!
+      for id in column {
+        if (id != gameObject.id) {
+          newIDs.append(id)
+        }
+      }
+      row[y] = newIDs
+      self.board[x] = row
     }
 
     // Add the given gameobject to the gameboard
@@ -76,7 +88,7 @@ pub contract BlindNinjaCore {
     // Remove this object from the gameboard
     pub fun remove(_ gameObject: {GameObject}?) {
       if (gameObject != nil) {
-        self.clearFromBoard(gameObject!.referencePoint)
+        self.clearFromBoard(gameObject!)
       }
     }
 
@@ -94,6 +106,7 @@ pub contract BlindNinjaCore {
     }
   }
 
+  // Struct to hold the result of a level in the game.
   pub struct LevelResult {
     pub let map: {Map}
     pub let gameObjects: {Int: {GameObject}}
@@ -106,9 +119,7 @@ pub contract BlindNinjaCore {
     }
   }
 
-  // ------------------------------------------
-  // Begin Level interface
-  // ------------------------------------------
+  // Interface for a level in the game, defining its properties and behaviors.
   pub resource interface Level {
     access(all) let name: String
 
@@ -118,8 +129,6 @@ pub contract BlindNinjaCore {
     // struct for the 'LevelResult'
     access(all) let map: {Map}
     access(all) let gameObjects: {Int: {GameObject}}
-
-    // ------ Static modifiers that control the level --------
 
     // Mechanics are run on every tick, in the order of the given array.
     access(all) let mechanics: [{GameMechanic}]
@@ -138,9 +147,9 @@ pub contract BlindNinjaCore {
 
     access(all) let gameboard: GameBoard
 
-    // ------ End Static modifiers --------
-
-    // ------ Game Execution --------
+    // Default implementation of providing the initial level
+    // state for a UI to show before a player enters in a sequence
+    // to execute the game with.
     access(all) fun getInitialLevel(): LevelResult {
       let activeLevel = BlindNinjaCore.LevelResult(
         map: self.map,
@@ -150,6 +159,7 @@ pub contract BlindNinjaCore {
       return activeLevel
     }
 
+    // Executes a given sequence given a level from beginning to end.
     access(all) fun executeFullLevel(level: &LevelSaveState): [LevelResult] {
       let sequence = level.sequence
       
@@ -176,11 +186,13 @@ pub contract BlindNinjaCore {
 
     // Returns true if the game has been won.
     access(all) fun tickLevel(level: &LevelSaveState): Bool
-    // ------ End Game Execution -------
   
   }
 
-
+  // Resource to save the state of a level during gameplay or to resume
+  // gameplay at a later time, assuming a TX needs to batch a level into
+  // multiple, or if we want multiple sequences to be submittable to
+  // a single level.
   pub resource LevelSaveState {
     access(all) let referenceLevelID: UInt64
     access(all) let map: {Map}
@@ -220,6 +232,7 @@ pub contract BlindNinjaCore {
     }
   }
 
+  // Function to create a new level save state.
   pub fun createLevelSaveState(_ level: &{Level}, _ sequence: [String]): @LevelSaveState {
     return <- create LevelSaveState(
       referenceLevelID: level.uuid,
@@ -231,14 +244,8 @@ pub contract BlindNinjaCore {
     )
   }
 
-  // ------------------------------------------
-  // End Level interface
-  // ------------------------------------------
 
-  // ------------------------------------------
-  // Start level collection
-  // ------------------------------------------
-
+  // Interface and resource for managing a collection of levels.
   pub resource interface LevelCollectionPublic {
     pub fun getLevel(_ name: String): &{Level}
     pub fun getLevelNames(): [String]
@@ -274,6 +281,7 @@ pub contract BlindNinjaCore {
     }
   }
 
+  // Function to create a new level collection.
   pub fun createLevelCollection(): @LevelCollection {
     return <- create LevelCollection()
   }

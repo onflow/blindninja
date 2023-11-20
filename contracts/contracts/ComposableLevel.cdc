@@ -1,7 +1,8 @@
 import "BlindNinjaCore"
 
-// This composable level assumes that a ninja game object
-// has been provided, and has the ID of '0'
+
+// This composable level provides an easy way to create a BlindNinja
+// level using core blind ninja core interfaces as drivers within it.
 pub contract ComposableLevel {
   
   pub resource Level: BlindNinjaCore.Level {
@@ -35,10 +36,14 @@ pub contract ComposableLevel {
       }
     }
 
+    // Generic way to tick the level making use of all of the mechanics
+    // and win conditions provided at initialization time.
+    // all mechanics and win conditions are executed in the order
+    // of which they were provided.
     access(all) fun tickLevel(level: &BlindNinjaCore.LevelSaveState): Bool {
       let curSequence: String = level.sequence[level.curSequenceIndex]!
       
-      // each tick should pass in the set of mechanics
+      // each tick will run every mechanic
       for m in self.mechanics {
         m.tick(level)
       }
@@ -59,6 +64,7 @@ pub contract ComposableLevel {
 
   }
 
+  // Create a new level given all of the parameters needed
   pub fun createLevel(
     name: String,
     map: {BlindNinjaCore.Map},

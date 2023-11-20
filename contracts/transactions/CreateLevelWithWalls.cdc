@@ -13,24 +13,40 @@ transaction(levelName: String) {
 
     let levelCollection: &BlindNinjaCore.LevelCollection = signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection)!
     
+    // Final set of game objects are provided via this object.
+    let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
+    
     // Create the ninja for the map
     let ninja = GenericLevelComponents.GenericNinja(id: 1)
     ninja.setReferencePoint([5,5])
+    gameObjects[Int(ninja.id)] = ninja
 
     // Create the flag to place on the map
     let flag = GenericLevelComponents.Flag(id: 2)
     flag.setReferencePoint([8,5])
-
-    // Add these objects to the master list of game objects
-    // for creating the new level.
-    let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
-    gameObjects[Int(ninja.id)] = ninja
     gameObjects[Int(flag.id)] = flag
+
+    // Create 3 wall objects right in front of
+    // where the flag was placed
+    var y = 4
+    var wallID = 3
+    while (wallID <= 5) {
+      let wall = GenericLevelComponents.Wall(id: UInt64(wallID))
+      wall.setReferencePoint([7,y])
+      gameObjects[Int(wall.id)] = wall
+      y = y + 1
+      wallID = wallID + 1
+    }
 
     // Create a move mechanic which makes it so that
     // the ninja moves according to the inputted sequence
     // for the level.
     let moveMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.NinjaMovement(ninjaID: 1)
+
+    // Create a wall mechanic, that makes it so that if a ninja
+    // runs into the wall, their movement is reverted back.
+    // This is to meant to run after the move mechanic.
+    let wallMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.WallMechanic(ninjaID: 1, wallType: Type<GenericLevelComponents.Wall>())
 
     // Create a win condition for the level, where the ninja
     // must touch the flag to win.
@@ -45,7 +61,8 @@ transaction(levelName: String) {
       map: GenericLevelComponents.Map(),
       gameObjects: gameObjects,
       mechanics: [
-        moveMechanic
+        moveMechanic,
+        wallMechanic
       ],
       visuals: [],
       winConditions: [
@@ -59,8 +76,12 @@ transaction(levelName: String) {
     // accidentally deletes their level that is live and possibly in use
     let levelNames = levelCollection.getLevelNames()
     if levelNames.length > 0 {
-      let oldLevel <- levelCollection.removeLevel(levelName)
-      destroy oldLevel
+      for name in levelNames {
+        if (levelName == name) {
+          let oldLevel <- levelCollection.removeLevel(levelName)
+          destroy oldLevel
+        }
+      }
     }
     levelCollection.addLevel(<-level)
   }
