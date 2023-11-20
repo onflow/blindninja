@@ -44,8 +44,17 @@ pub contract ComposableLevel {
       }
 
       // all win conditions should be checked after the above is complete.
+      var hasWonGame = false
       
-      return false
+      // If any of the win condtions are satisfied, then we consider
+      // the game as won.
+      // TODO: This maybe later should have a mechanism
+      // of an 'and' rather than 'or' mechanic.
+      for w in self.winConditions {
+        hasWonGame = hasWonGame || w.check(level)
+      }
+      
+      return hasWonGame
     }
 
   }

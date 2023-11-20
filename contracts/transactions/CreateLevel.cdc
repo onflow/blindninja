@@ -11,12 +11,22 @@ transaction(levelName: String) {
     }
 
     let levelCollection: &BlindNinjaCore.LevelCollection = signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection)!
+    
     let ninja = GenericLevelComponents.GenericNinja(id: 1)
     ninja.setReferencePoint([5,5])
+
+    let flag = GenericLevelComponents.Flag(id: 2)
+    flag.setReferencePoint([8,5])
 
 
     let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
     gameObjects[Int(ninja.id)] = ninja
+    gameObjects[Int(flag.id)] = flag
+
+    let winCondition = GenericLevelComponents.NinjaTouchGoal(
+      ninjaID: ninja.id,
+      goalID: flag.id
+    )
 
     let moveMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.NinjaMovement(ninjaID: 1)
 
@@ -28,7 +38,9 @@ transaction(levelName: String) {
         moveMechanic
       ],
       visuals: [],
-      winConditions: [],
+      winConditions: [
+        winCondition
+      ],
     )
 
     let levelNames = levelCollection.getLevelNames()

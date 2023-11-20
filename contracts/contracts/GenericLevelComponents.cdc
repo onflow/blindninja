@@ -6,12 +6,12 @@ pub contract GenericLevelComponents {
   // Provide a ninja's ID, and the ninja will move according to the current sequence number each tick
   pub struct NinjaMovement: BlindNinjaCore.GameMechanic {
     pub let name: String
-    pub let ninjaID: Int
+    pub let ninjaID: UInt64
 
     pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
       let curSequence = level.sequence[level.curSequenceIndex]!
-      let prevNinja = level.gameObjects[self.ninjaID]!
-      let newNinja = level.gameObjects[self.ninjaID]!
+      let prevNinja = level.gameObjects[Int(self.ninjaID)]!
+      let newNinja = level.gameObjects[Int(self.ninjaID)]!
       let existingPoint = newNinja.referencePoint
       if (curSequence == "ArrowDown") {
         newNinja.setReferencePoint([existingPoint[0]!, existingPoint[1]! + 1])
@@ -27,10 +27,10 @@ pub contract GenericLevelComponents {
       }
       level.gameboard.remove(prevNinja)
       level.gameboard.add(newNinja)
-      level.setGameObject(self.ninjaID, newNinja)
+      level.setGameObject(Int(self.ninjaID), newNinja)
     }
 
-    init(ninjaID: Int) {
+    init(ninjaID: UInt64) {
       self.name = "Ninja Movement Mechanic"
       self.ninjaID = ninjaID
     }
@@ -62,55 +62,47 @@ pub contract GenericLevelComponents {
     }
   }
 
-/* 
-  pub struct Wall: BlindNinjaCore.GameObject {
-    pub var id: UInt64
-    pub var type: String
-    pub var doesTick: Bool
-    pub var referencePoint: [Int]
+  pub struct NinjaTouchGoal: BlindNinjaCore.WinCondition {
+    access(all) let ninjaID: UInt64
+    access(all) let goalID: UInt64
 
-    pub fun tick(
-      tickCount: UInt64,
-      level: &{BlindNinjaCore.Level},
-      callbacks: {
-        String: ((AnyStruct?): AnyStruct?)
+    pub fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool {
+      let collisionPoints = level.gameboard.newCollisionPoints
+      // get collision ids at the new collision points
+      for point in collisionPoints {
+        let ids: [UInt64] = level.gameboard.getIDsAtPoint(point)
+        var containsNinja = false
+        var containsGoal = false
+        for id in ids {
+          containsNinja = containsNinja || id == self.ninjaID
+          containsGoal = containsGoal || id == self.goalID
+        }
+        if (containsNinja && containsGoal) {
+          return true
+        }
+        if (containsNinja || containsGoal) {
+          return false
+        }
       }
-    ) {
-      // do nothing
+      return false
     }
-
-    init(id: UInt64) {
-      self.id = id
-      self.type = "Wall"
-      self.doesTick = false
-      self.referencePoint = [0,0]
+    
+    init(ninjaID: UInt64, goalID: UInt64) {
+      self.ninjaID = ninjaID
+      self.goalID = goalID
     }
   }
 
   pub struct Flag: BlindNinjaCore.GameObject {
     pub var id: UInt64
     pub var type: String
-    pub var doesTick: Bool
     pub var referencePoint: [Int]
-
-    pub fun tick(
-      tickCount: UInt64,
-      level: &{BlindNinjaCore.Level},
-      callbacks: {
-        String: ((AnyStruct?): AnyStruct?)
-      }
-    ) {
-      // do nothing
-    }
 
     init(id: UInt64) {
       self.id = id
       self.type = "Flag"
-      self.doesTick = false
       self.referencePoint = [0,0]
     }
   }
-  */
-
   
 }

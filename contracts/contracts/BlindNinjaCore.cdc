@@ -35,7 +35,8 @@ pub contract BlindNinjaCore {
   // Begin GameBoard struct
   // ------------------------------------------
   pub struct GameBoard {
-    pub var board: {Int: {Int: [{GameObject}]}}
+    // Map of x coordinate to y coordinate to object id
+    pub var board: {Int: {Int: [UInt64]}}
     pub var newCollisionPoints: [[Int]]
 
     access(self) fun addToBoard(_ gameObject: {GameObject}) {
@@ -53,7 +54,7 @@ pub contract BlindNinjaCore {
       if (column[y]!.length > 0) {
         self.newCollisionPoints.append(referencePoint)
       }
-      column[y]!.append(gameObject)
+      column[y]!.append(gameObject.id)
       self.board[x] = column
     }
 
@@ -81,6 +82,10 @@ pub contract BlindNinjaCore {
 
     pub fun clearCollisionPoints() {
       self.newCollisionPoints = []
+    }
+
+    pub fun getIDsAtPoint(_ refPoint: [Int]): [UInt64] {
+      return self.board[refPoint[0]!]![refPoint[1]!]!
     }
 
     init() {
@@ -188,6 +193,7 @@ pub contract BlindNinjaCore {
 
     access(all) fun incrementSequenceIndex() {
       self.curSequenceIndex = self.curSequenceIndex + 1
+      self.gameboard.clearCollisionPoints()
     }
 
     access(all) fun setState(_ key: String,_ value: AnyStruct) {
