@@ -16,9 +16,9 @@ transaction(levelName: String) {
 
 
     let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
-    gameObjects[0] = ninja
+    gameObjects[Int(ninja.id)] = ninja
 
-    let moveMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.NinjaMovement(ninjaID: 0)
+    let moveMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.NinjaMovement(ninjaID: 1)
 
     let level <- ComposableLevel.createLevel(
       name: levelName,
