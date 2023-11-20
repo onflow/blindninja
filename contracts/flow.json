@@ -73,7 +73,7 @@
 			"key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
 		},
 		"testnet-account": {
-			"address": "be3c749e61446ae6",
+			"address": "3b4340bde2cfd675",
 			"key": {
 				"type": "file",
 				"location": "testnet-account.pkey"
