@@ -23,7 +23,7 @@ transaction(levelName: String) {
 
     // Create the flag to place on the map
     let flag = GenericLevelComponents.Flag(id: 2)
-    flag.setReferencePoint([8,5])
+    flag.setReferencePoint([10,5])
     gameObjects[Int(flag.id)] = flag
 
     // Create 3 wall objects right in front of
@@ -33,6 +33,15 @@ transaction(levelName: String) {
     while (wallID <= 5) {
       let wall = GenericLevelComponents.Wall(id: UInt64(wallID))
       wall.setReferencePoint([7,y])
+      gameObjects[Int(wall.id)] = wall
+      y = y + 1
+      wallID = wallID + 1
+    }
+
+    y = 0
+    while (wallID <= 15) {
+      let wall = GenericLevelComponents.Wall(id: UInt64(wallID))
+      wall.setReferencePoint([4,y])
       gameObjects[Int(wall.id)] = wall
       y = y + 1
       wallID = wallID + 1
@@ -48,6 +57,9 @@ transaction(levelName: String) {
     // This is to meant to run after the move mechanic.
     let wallMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.WallMechanic(ninjaID: 1, wallType: Type<GenericLevelComponents.Wall>())
 
+    // Center the camera around the ninja at the end of each tick.
+    let centeredCameraMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.CenteredCamera(centeredObjectID: 1)
+
     // Create a win condition for the level, where the ninja
     // must touch the flag to win.
     let winCondition = GenericLevelComponents.NinjaTouchGoal(
@@ -61,13 +73,14 @@ transaction(levelName: String) {
       map: GenericLevelComponents.Map(
         anchorX: 0,
         anchorY: 0,
-        viewWidth: 20,
-        viewHeight: 20
+        viewWidth: 9,
+        viewHeight: 9
       ),
       gameObjects: gameObjects,
       mechanics: [
         moveMechanic,
-        wallMechanic
+        wallMechanic,
+        centeredCameraMechanic
       ],
       visuals: [],
       winConditions: [

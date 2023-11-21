@@ -12,3 +12,9 @@ flow transactions send ./transactions/CreateLevelWithWalls.cdc WallsLevel --sign
 
 echo "\n\Running game with walls mechanic"
 flow scripts execute ./scripts/ExecuteGame.cdc 0xf8d6e0586b0a20c7 WallsLevel '["ArrowRight","ArrowRight", "ArrowRight", "ArrowRight", "ArrowRight", "ArrowRight"]'
+
+echo "\n\Creating Game with walls mechanic"
+flow transactions send ./transactions/CreateLevelWithFogOfWar.cdc FogLevel --signer emulator-account
+
+echo "\n\Running game with walls mechanic"
+flow scripts execute ./scripts/ExecuteGame.cdc 0xf8d6e0586b0a20c7 FogLevel '["ArrowRight","ArrowRight", "ArrowRight", "ArrowRight", "ArrowRight", "ArrowRight"]'

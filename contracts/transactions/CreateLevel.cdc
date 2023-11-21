@@ -42,7 +42,12 @@ transaction(levelName: String) {
     // Create the level, combining all of the above elments.
     let level <- ComposableLevel.createLevel(
       name: levelName,
-      map: GenericLevelComponents.Map(),
+      map: GenericLevelComponents.Map(
+        anchorX: 0,
+        anchorY: 0,
+        viewWidth: 20,
+        viewHeight: 20
+      ),
       gameObjects: gameObjects,
       mechanics: [
         moveMechanic

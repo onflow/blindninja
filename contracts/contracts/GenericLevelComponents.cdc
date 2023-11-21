@@ -31,7 +31,7 @@ pub contract GenericLevelComponents {
     }
 
     init(ninjaID: UInt64) {
-      self.name = "Ninja Movement Mechanic"
+      self.name = "Ninja Movement"
       self.ninjaID = ninjaID
     }
   }
@@ -81,9 +81,37 @@ pub contract GenericLevelComponents {
     }
 
     init(ninjaID: UInt64, wallType: Type) {
-      self.name = "Wall Mechanic"
+      self.name = "Wall blocks ninja"
       self.ninjaID = ninjaID
       self.wallType = wallType
+    }
+  }
+
+  // This works best if the original size of the map is made up
+  // of an odd width and height, so that the center can be actually
+  // be in the center, rather than one-off
+  // This mechanic does not center the ninja in the initial state,
+  // that should be manually done by the game itself at creation time.
+  pub struct CenteredCamera: BlindNinjaCore.GameMechanic {
+    pub let name: String
+    pub let centeredObjectID: UInt64
+
+    pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
+      let centeredObjectLocation: [Int] = level.gameObjects[Int(self.centeredObjectID)]!.referencePoint
+      let newAnchorX = centeredObjectLocation[0]! - (level.map.viewWidth/2)
+      let newAnchorY = centeredObjectLocation[1]! - (level.map.viewHeight/2)
+      let newMap: Map = Map(
+        anchorX: newAnchorX,
+        anchorY: newAnchorY,
+        viewWidth: level.map.viewWidth,
+        viewHeight: level.map.viewHeight
+      )
+      level.setMap(newMap)
+    }
+
+    init(centeredObjectID: UInt64) {
+      self.name = "Centered Camera"
+      self.centeredObjectID = centeredObjectID
     }
   }
 
@@ -93,11 +121,11 @@ pub contract GenericLevelComponents {
     pub let viewWidth: Int
     pub let viewHeight: Int
 
-    init() {
-      self.anchorX = 0
-      self.anchorY = 0
-      self.viewWidth = 20
-      self.viewHeight = 20
+    init(anchorX: Int, anchorY: Int, viewWidth: Int, viewHeight: Int) {
+      self.anchorX = anchorX
+      self.anchorY = anchorY
+      self.viewWidth = viewWidth
+      self.viewHeight = viewHeight
     }
   }
 

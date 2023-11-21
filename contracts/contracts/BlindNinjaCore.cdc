@@ -195,7 +195,7 @@ pub contract BlindNinjaCore {
   // a single level.
   pub resource LevelSaveState {
     access(all) let referenceLevelID: UInt64
-    access(all) let map: {Map}
+    access(all) var map: {Map}
     access(all) let gameObjects: {Int: {GameObject}}
     access(all) let gameboard: GameBoard
     access(all) let state: {String: AnyStruct}
@@ -218,6 +218,10 @@ pub contract BlindNinjaCore {
 
     access(all) fun setGameObject(_ id: Int, _ gameObject: {GameObject}) {
       self.gameObjects[id] = gameObject
+    }
+    
+    access(all) fun setMap(_ map: {Map}) {
+      self.map = map
     }
 
     init(referenceLevelID: UInt64, map: {Map}, gameObjects: {Int: {GameObject}}, gameboard: GameBoard, state: {String: AnyStruct}, sequence: [String]) {
