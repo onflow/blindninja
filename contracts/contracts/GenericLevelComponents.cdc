@@ -6,12 +6,12 @@ pub contract GenericLevelComponents {
   // Provide a ninja's ID, and the ninja will move according to the current sequence number each tick
   pub struct NinjaMovement: BlindNinjaCore.GameMechanic {
     pub let name: String
-    pub let ninjaID: Int
+    pub let ninjaID: UInt64
 
     pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
       let curSequence = level.sequence[level.curSequenceIndex]!
-      let prevNinja = level.gameObjects[self.ninjaID]!
-      let newNinja = level.gameObjects[self.ninjaID]!
+      let prevNinja = level.gameObjects[Int(self.ninjaID)]!
+      let newNinja = level.gameObjects[Int(self.ninjaID)]!
       let existingPoint = newNinja.referencePoint
       if (curSequence == "ArrowDown") {
         newNinja.setReferencePoint([existingPoint[0]!, existingPoint[1]! + 1])
@@ -27,24 +27,63 @@ pub contract GenericLevelComponents {
       }
       level.gameboard.remove(prevNinja)
       level.gameboard.add(newNinja)
-      level.setGameObject(self.ninjaID, newNinja)
+      level.setGameObject(Int(self.ninjaID), newNinja)
     }
 
-    init(ninjaID: Int) {
+    init(ninjaID: UInt64) {
       self.name = "Ninja Movement Mechanic"
       self.ninjaID = ninjaID
     }
   }
 
-  pub struct GenericNinja: BlindNinjaCore.GameObject {
-    pub var id: UInt64
-    pub var type: String
-    pub var referencePoint: [Int]
+  // Prevents a ninja from coinciding with a wall
+  pub struct WallMechanic: BlindNinjaCore.GameMechanic {
+    pub let name: String
+    pub let ninjaID: UInt64
+    pub let wallType: Type
 
-    init(id: UInt64) {
-      self.id = id
-      self.type = "BlindNinja"
-      self.referencePoint = [0,0]
+    pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
+      // Check through the new collisions that have come up,
+      // If any have to do with the ninja colliding with a
+      // wall type, then revert the ninja to go back to its
+      // location from the previous game result.
+      let collisionPoints = level.gameboard.newCollisionPoints
+      
+      var ninjaHasRunIntoWall = false
+      for point in collisionPoints {
+        let ids: [UInt64] = level.gameboard.getIDsAtPoint(point)
+        var containsNinja = false
+        var containsWallType = false
+        for id in ids {
+          containsNinja = containsNinja || id == self.ninjaID
+          containsWallType = containsWallType || self.wallType == level.gameObjects[Int(id)]!.getType()
+        }
+        if (containsNinja && containsWallType) {
+          ninjaHasRunIntoWall = true
+          break
+        }
+        if (containsNinja || containsWallType) {
+          ninjaHasRunIntoWall = false
+          break
+        }
+      }
+
+      if (ninjaHasRunIntoWall) {
+        // If the ninja is currently running into a wall,
+        // revert the ninja to its previous position from before
+        // this move.
+        let prevNinja = level.tickResults[Int(level.tickResults.length - 1)]!.gameObjects[Int(self.ninjaID)]!
+        let curNinja = level.gameObjects[Int(self.ninjaID)]!
+        level.gameboard.remove(curNinja)
+        level.gameboard.add(prevNinja)
+        level.setGameObject(Int(self.ninjaID), prevNinja)
+      }
+    }
+
+    init(ninjaID: UInt64, wallType: Type) {
+      self.name = "Wall Mechanic"
+      self.ninjaID = ninjaID
+      self.wallType = wallType
     }
   }
 
@@ -62,27 +101,45 @@ pub contract GenericLevelComponents {
     }
   }
 
-/* 
-  pub struct Wall: BlindNinjaCore.GameObject {
+  pub struct NinjaTouchGoal: BlindNinjaCore.WinCondition {
+    access(all) let ninjaID: UInt64
+    access(all) let goalID: UInt64
+
+    pub fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool {
+      let collisionPoints = level.gameboard.newCollisionPoints
+      // get collision ids at the new collision points
+      for point in collisionPoints {
+        let ids: [UInt64] = level.gameboard.getIDsAtPoint(point)
+        var containsNinja = false
+        var containsGoal = false
+        for id in ids {
+          containsNinja = containsNinja || id == self.ninjaID
+          containsGoal = containsGoal || id == self.goalID
+        }
+        if (containsNinja && containsGoal) {
+          return true
+        }
+        if (containsNinja || containsGoal) {
+          return false
+        }
+      }
+      return false
+    }
+    
+    init(ninjaID: UInt64, goalID: UInt64) {
+      self.ninjaID = ninjaID
+      self.goalID = goalID
+    }
+  }
+
+  pub struct GenericNinja: BlindNinjaCore.GameObject {
     pub var id: UInt64
     pub var type: String
-    pub var doesTick: Bool
     pub var referencePoint: [Int]
-
-    pub fun tick(
-      tickCount: UInt64,
-      level: &{BlindNinjaCore.Level},
-      callbacks: {
-        String: ((AnyStruct?): AnyStruct?)
-      }
-    ) {
-      // do nothing
-    }
 
     init(id: UInt64) {
       self.id = id
-      self.type = "Wall"
-      self.doesTick = false
+      self.type = "BlindNinja"
       self.referencePoint = [0,0]
     }
   }
@@ -90,27 +147,25 @@ pub contract GenericLevelComponents {
   pub struct Flag: BlindNinjaCore.GameObject {
     pub var id: UInt64
     pub var type: String
-    pub var doesTick: Bool
     pub var referencePoint: [Int]
-
-    pub fun tick(
-      tickCount: UInt64,
-      level: &{BlindNinjaCore.Level},
-      callbacks: {
-        String: ((AnyStruct?): AnyStruct?)
-      }
-    ) {
-      // do nothing
-    }
 
     init(id: UInt64) {
       self.id = id
       self.type = "Flag"
-      self.doesTick = false
       self.referencePoint = [0,0]
     }
   }
-  */
 
+  pub struct Wall: BlindNinjaCore.GameObject {
+    pub var id: UInt64
+    pub var type: String
+    pub var referencePoint: [Int]
+
+    init(id: UInt64) {
+      self.id = id
+      self.type = "Wall"
+      self.referencePoint = [0,0]
+    }
+  }
   
 }
