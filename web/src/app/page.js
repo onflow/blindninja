@@ -1,16 +1,5 @@
-import { Flex, Container } from '@radix-ui/themes'
-
-import Game from '@/components/game/Game.js'
-import Navbar from '@/components/ui/Navbar.js'
+import { redirect } from 'next/navigation'
 
 export default function Home() {
-
-  return (
-    <Flex direction="column" style={{ height: '100vh'}}>
-      <Navbar/>
-      <Container py="8" size="4">
-        <Game/>
-      </Container>
-    </Flex>
-  )
+  redirect('/0x3b4340bde2cfd675/myNewLevel')
 }

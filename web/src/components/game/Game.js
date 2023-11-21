@@ -8,20 +8,22 @@ import GameResult from '@/components/game/GameResult.js'
 
 import { executeLevel, getInitialBoard } from '@/lib/engine'
 
-const Game = () => {
+const Game = ({ address, levelName }) => {
+
   const [moves, setMoves] = useState('')
-  const [board, setBoard] = useState([['']])
+  const [board, setBoard] = useState()
   const [state, setState] = useState('ready')
   const [gameResults, setGameResults] = useState()
 
   useEffect(() => {
-    setBoard(getInitialBoard())
+    (async () => {
+      setBoard(await getInitialBoard(address, levelName))
+    })().catch(console.error)
   }, [])
 
   async function run() {
     setState('executing')
-    await new Promise(r => setTimeout(r, 1000));
-    setGameResults(executeLevel(moves))
+    setGameResults(await executeLevel(address, levelName, moves))
     setState('executed')
   }
 
@@ -29,7 +31,7 @@ const Game = () => {
     setMoves('')
     setState('ready')
     setGameResults()
-    setBoard(getInitialBoard())
+    setBoard(await getInitialBoard(address, levelName))
   }
 
   return (
@@ -38,11 +40,11 @@ const Game = () => {
         <Flex gap="3" direction="column">
           <Flex align="baseline">
             <Flex ml="0" gap="3" align="baseline">
-              <Code variant="ghost">0x34ac358b9819f79d</Code>
-              <Badge variant="surface">Mainnet</Badge>
+              <Code variant="ghost">{address}</Code>
+              <Badge variant="surface">Testnet</Badge>
             </Flex>
             <Flex mr="0" grow="1" justify="end">
-              <Text size="4" weight="bold">Intro Level</Text>
+              <Text size="4" weight="bold">{levelName}</Text>
             </Flex>
           </Flex>
 
@@ -63,9 +65,20 @@ const Game = () => {
           <Tabs.Content value="play">
 
             <Flex mt="5" direction="column" gap="3">
+              {/* <Kbd>↑</Kbd>
+              <Kbd>↓</Kbd>
+              <Kbd>→</Kbd>
+              <Kbd>←</Kbd> */}
+              <Code>
+                L - ArrowLeft  <br/>
+                U - ArrowUp <br/>
+                R - ArrowRight <br/>
+                D - ArrowDown <br/>
+              </Code>
               <TextArea
                 placeholder="Enter moves (e.g. RRLLDUL)"
                 value={moves}
+                disabled={state != 'ready'}
                 onChange={(e) => setMoves(e.target.value.toUpperCase())}
               />
 
@@ -73,7 +86,7 @@ const Game = () => {
                 onClick={run}
                 disabled={state != 'ready'}
               >
-                { state === 'ready' && 'Submit' }
+                { state === 'ready' && 'Simulate' }
                 { state === 'executing' && 'Executing ...' }
                 { state === 'executed' && 'Done' }
               </Button>

@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { Flex, Text, Button } from '@radix-ui/themes'
 
 const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
@@ -14,11 +16,26 @@ const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
         }, 200)
     }
 
+    useEffect(() => {
+        if (results) {
+            advanceFrame()
+        }
+    }, [results])
+
     return (
         <Flex gap="3" direction="column">
 
             {results ? (
-                <Text>Result: {results.winloss}</Text>
+
+                <Flex gap="2">
+                    <Text>Win: </Text>
+                    <Text
+                        weight="bold"
+                        color={results.haswon? 'green': 'red'}
+                    >
+                        {results.haswon? 'Yes': 'No'}
+                    </Text>
+                </Flex>
             ):(
                 <Text>Waiting for player</Text>
             )}
@@ -27,7 +44,7 @@ const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
                 onClick={advanceFrame}
                 disabled={!results}
             >
-                Play Result
+                Watch Again
             </Button>
 
             <Button
