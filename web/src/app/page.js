@@ -14,5 +14,4 @@ export default function Home() {
       </Link>
     </Flex>
   )
-  redirect('/0x3b4340bde2cfd675/myNewLevel')
 }
