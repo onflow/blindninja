@@ -1,6 +1,6 @@
 import * as fcl from "@onflow/fcl"
 
-const BlindNinjaCore = "0x3b4340bde2cfd675"
+const BlindNinjaCore = "0x622966173915e22a"
 
 function renderFrame(frame) {
     var board = new Array(Number(frame.map.viewWidth))
@@ -13,12 +13,8 @@ function renderFrame(frame) {
         const objX = Number(frame.gameObjects[i].referencePoint[0] - anchorX)
         const objY = Number(frame.gameObjects[i].referencePoint[1] - anchorY)
         let obj = 'X'
-        if (frame.gameObjects[i].type == 'BlindNinja') {
-            obj = '🥷'
-        } else if (frame.gameObjects[i].type == 'Flag') {
-            obj = '🏁'
-        } else if (frame.gameObjects[i].type == 'Wall') {
-            obj = '🧱'
+        if (frame.gameObjects[i].display) {
+            obj = frame.gameObjects[i].display
         }
         if (objX >= 0 && objX < board.length && objY >= 0 && objY < board[0].length) {
             board[objY][objX] = obj
