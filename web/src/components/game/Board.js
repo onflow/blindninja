@@ -55,7 +55,7 @@ const Board = ({ board }) => {
         >
           <Flex justify="center">
             <Text size="6">
-              Loading...
+              Loading ...
             </Text>
           </Flex>
         </Flex>
