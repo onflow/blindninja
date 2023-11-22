@@ -14,10 +14,15 @@ pub contract BlindNinjaCore {
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
+    pub var display: String
 
     // Function to set a new reference point for the game object.
     pub fun setReferencePoint(_ newReferencePoint: [Int]) {
       self.referencePoint = newReferencePoint
+    }
+
+    pub fun setDisplay(_ newDisplay: String) {
+      self.display = newDisplay
     }
   }
 

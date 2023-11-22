@@ -164,11 +164,13 @@ pub contract GenericLevelComponents {
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
+    pub var display: String
 
     init(id: UInt64) {
       self.id = id
       self.type = "BlindNinja"
       self.referencePoint = [0,0]
+      self.display = "🥷"
     }
   }
 
@@ -176,11 +178,13 @@ pub contract GenericLevelComponents {
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
+    pub var display: String
 
     init(id: UInt64) {
       self.id = id
       self.type = "Flag"
       self.referencePoint = [0,0]
+      self.display = "🏁"
     }
   }
 
@@ -188,11 +192,13 @@ pub contract GenericLevelComponents {
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
+    pub var display: String
 
     init(id: UInt64) {
       self.id = id
       self.type = "Wall"
       self.referencePoint = [0,0]
+      self.display = "🧱"
     }
   }
   
