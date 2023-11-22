@@ -18,7 +18,7 @@ transaction(levelName: String) {
     
     // Create the ninja for the map
     let ninja = GenericLevelComponents.GenericNinja(id: 1)
-    ninja.setReferencePoint([5,5])
+    ninja.setReferencePoint([4,4])
     gameObjects[Int(ninja.id)] = ninja
 
     // Create the flag to place on the map
@@ -28,11 +28,11 @@ transaction(levelName: String) {
 
     // Create 3 wall objects right in front of
     // where the flag was placed
-    var y = 4
+    var y = 3
     var wallID = 3
     while (wallID <= 5) {
       let wall = GenericLevelComponents.Wall(id: UInt64(wallID))
-      wall.setReferencePoint([7,y])
+      wall.setReferencePoint([5,y])
       gameObjects[Int(wall.id)] = wall
       y = y + 1
       wallID = wallID + 1
@@ -41,7 +41,7 @@ transaction(levelName: String) {
     y = 0
     while (wallID <= 15) {
       let wall = GenericLevelComponents.Wall(id: UInt64(wallID))
-      wall.setReferencePoint([4,y])
+      wall.setReferencePoint([3,y])
       gameObjects[Int(wall.id)] = wall
       y = y + 1
       wallID = wallID + 1
