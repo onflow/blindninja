@@ -28,7 +28,6 @@ const Game = ({ address, levelName }) => {
   }
 
   async function resetGame() {
-    setMoves('')
     setState('ready')
     setGameResults()
     setBoard(await getInitialBoard(address, levelName))

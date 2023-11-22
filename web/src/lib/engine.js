@@ -7,7 +7,7 @@ function renderFrame(frame) {
         .fill('').map(()=>new Array(Number(frame.map.viewHeight)).fill(''))
 
     let anchorX = Number(frame.map.anchorX)
-    let anchorY = Number(frame.map.anchorX)
+    let anchorY = Number(frame.map.anchorY)
 
     for (const i in frame.gameObjects) {
         const objX = Number(frame.gameObjects[i].referencePoint[0] - anchorX)
@@ -17,8 +17,12 @@ function renderFrame(frame) {
             obj = '🥷'
         } else if (frame.gameObjects[i].type == 'Flag') {
             obj = '🏁'
+        } else if (frame.gameObjects[i].type == 'Wall') {
+            obj = '🧱'
         }
-        board[objY][objX] = obj
+        if (objX >= 0 && objX < board.length && objY >= 0 && objY < board[0].length) {
+            board[objY][objX] = obj
+        }
     }
     return board
 }
@@ -51,6 +55,8 @@ export async function getInitialBoard(address, levelName) {
             arg(levelName, t.String),
         ]
     })
+
+    console.log("getInitialBoard", result)
 
     return renderFrame(result)
 }
@@ -99,6 +105,8 @@ export async function executeLevel(address, levelName, moves) {
             arg(movesArray, t.Array(t.String)),
         ]
     })
+
+    console.log("executeLevel", result)
 
     var haswon = false
     var frames = []

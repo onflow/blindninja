@@ -7,7 +7,9 @@ const Navbar = () => {
         <>
             <Flex p="2" align="center">
                 <Flex gap="2" ml="2" align="baseline">
-                    <Heading>🥷 Blind Ninja</Heading>
+                    <a href='/'>
+                        <Heading>🥷 Blind Ninja</Heading>
+                    </a>
                     <Text>v0.0.1</Text>
                 </Flex>
                 <Flex mr="2" grow="1" justify="end">

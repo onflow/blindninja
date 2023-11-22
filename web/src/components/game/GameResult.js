@@ -1,17 +1,21 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Flex, Text, Button } from '@radix-ui/themes'
 
 const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
 
     var frameIndex = 0
+    var [ playing, setPlaying ] = useState(false)
 
     async function advanceFrame() {
+        setPlaying(true)
         setTimeout(() => {
             setBoardFunc(results.frames[frameIndex])
             frameIndex++
             if (frameIndex < results.frames.length) {
                 advanceFrame()
+            } else {
+                setPlaying(false)
             }
         }, 200)
     }
@@ -42,14 +46,14 @@ const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
 
             <Button
                 onClick={advanceFrame}
-                disabled={!results}
+                disabled={!results || playing}
             >
                 Watch Again
             </Button>
 
             <Button
                 onClick={resetGameFunc}
-                disabled={!results}
+                disabled={!results || playing}
             >
                 Reset
             </Button>
