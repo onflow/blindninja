@@ -1,5 +1,4 @@
 import "BlindNinjaCore"
-import "ComposableLevel"
 
 pub contract GenericLevelComponents {
 

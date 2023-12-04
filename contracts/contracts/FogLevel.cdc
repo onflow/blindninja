@@ -1,18 +1,20 @@
 import "BlindNinjaCore"
 import "GenericLevelComponents"
-import "ComposableLevel"
+import "BlindNinjaLevel"
 
-transaction(levelName: String) {
-  prepare(signer: AuthAccount) {
-    // Ensure we have a level collection to store these levels in on this account
-    if signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection) == nil {
-      let newLevelCollection <- BlindNinjaCore.createLevelCollection()
-      signer.save(<-newLevelCollection, to: /storage/levelCollection)
-      signer.link<&{BlindNinjaCore.LevelCollectionPublic}>(/public/levelCollection, target: /storage/levelCollection)
-    }
+// This composable level provides an easy way to create a BlindNinja
+// level using core blind ninja core interfaces as drivers within it.
+pub contract FogLevel: BlindNinjaLevel {
+  access(all) var name: String
+  access(all) var map: {BlindNinjaCore.Map}
+  access(all) var gameObjects: {Int: {BlindNinjaCore.GameObject}}
+  access(all) var mechanics: [{BlindNinjaCore.GameMechanic}]
+  access(all) var visuals: [{BlindNinjaCore.VisualElement}]
+  access(all) var winConditions: [{BlindNinjaCore.WinCondition}]
+  access(all) var gameboard: BlindNinjaCore.GameBoard
+  access(all) var state: {String: AnyStruct}
 
-    let levelCollection: &BlindNinjaCore.LevelCollection = signer.borrow<&BlindNinjaCore.LevelCollection>(from: /storage/levelCollection)!
-    
+  access(all) fun initializeLevel() {
     // Final set of game objects are provided via this object.
     let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
     
@@ -67,40 +69,41 @@ transaction(levelName: String) {
       goalID: flag.id
     )
 
-    // Create the level, combining all of the above elments.
-    let level <- ComposableLevel.createLevel(
-      name: levelName,
-      map: GenericLevelComponents.Map(
-        anchorX: 0,
-        anchorY: 0,
-        viewWidth: 9,
-        viewHeight: 9
-      ),
-      gameObjects: gameObjects,
-      mechanics: [
-        moveMechanic,
-        wallMechanic,
-        centeredCameraMechanic
-      ],
-      visuals: [],
-      winConditions: [
-        winCondition
-      ],
+    // Set all of the contract level variables
+    self.name = "Intro Level"
+    self.map = GenericLevelComponents.Map(
+      anchorX: 0,
+      anchorY: 0,
+      viewWidth: 9,
+      viewHeight: 9
     )
+    self.gameObjects = gameObjects
+    self.mechanics = [ moveMechanic, wallMechanic, centeredCameraMechanic ]
+    self.visuals = []
+    self.winConditions = [ winCondition ]
+    self.gameboard = BlindNinjaCore.GameBoard()
+    self.state = {}
+    self.addObjectsToGameBoard()
+  }
 
-    // If this level already exist, delete it and add it to the collection
-    // TODO: On live networks or in the future, we should make deleting a
-    // separate step from updating/adding a new level, to make sure no one
-    // accidentally deletes their level that is live and possibly in use
-    let levelNames = levelCollection.getLevelNames()
-    if levelNames.length > 0 {
-      for name in levelNames {
-        if (levelName == name) {
-          let oldLevel <- levelCollection.removeLevel(levelName)
-          destroy oldLevel
-        }
-      }
-    }
-    levelCollection.addLevel(<-level)
+  // This init doesn't really matter, as 'initializeGame' must be called before each interaction with this game.
+  // This is setup like this so that the contract can be updated, and the game will reflect those updates.
+  // If you want an immutable game that is never updateable, you can skip implementing the 'initializeLevel' and
+  // instead, and move all initialization code to 'init' below
+  init() {
+    self.name = "Intro Level"
+    self.map = GenericLevelComponents.Map(
+      anchorX: 0,
+      anchorY: 0,
+      viewWidth: 20,
+      viewHeight: 20
+    )
+    self.gameObjects = {}
+    self.mechanics = []
+    self.visuals = []
+    self.winConditions = []
+    self.gameboard = BlindNinjaCore.GameBoard()
+    self.state = {}
+    self.addObjectsToGameBoard()
   }
 }

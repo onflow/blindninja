@@ -3,14 +3,14 @@ import { Flex, Link } from '@radix-ui/themes'
 export default function Home() {
   return (
     <Flex direction="column" gap="4">
-      <Link size="4" weight="light" href="/0x622966173915e22a/myNewLevel">
-        0x622966173915e22a - myNewLevel
+      <Link size="4" weight="light" href="/0x565438380ef09966/IntroLevel">
+        0x565438380ef09966 - IntroLevel
       </Link>
-      <Link size="4" weight="light" href="/0x622966173915e22a/WallsLevel">
-        0x622966173915e22a - WallsLevel
+      <Link size="4" weight="light" href="/0x565438380ef09966/WallsLevel">
+        0x565438380ef09966 - WallsLevel
       </Link>
-      <Link size="4" weight="light" href="/0x622966173915e22a/FogLevel">
-        0x622966173915e22a - FogLevel
+      <Link size="4" weight="light" href="/0x565438380ef09966/FogLevel">
+        0x565438380ef09966 - FogLevel
       </Link>
     </Flex>
   )

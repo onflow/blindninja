@@ -1,6 +1,6 @@
 import * as fcl from "@onflow/fcl"
 
-const BlindNinjaCore = "0x622966173915e22a"
+const BlindNinjaCore = "0x598e55be1da28f73"
 
 function renderFrame(frame) {
     var board = new Array(Number(frame.map.viewWidth))
@@ -25,24 +25,21 @@ function renderFrame(frame) {
 
 export async function getInitialBoard(address, levelName) {
     const script = `
-    import BlindNinjaCore from ${BlindNinjaCore}
+        import BlindNinjaCore from ${BlindNinjaCore}
+        import BlindNinjaLevel from ${BlindNinjaCore}
 
-    pub fun main(address: Address, levelName: String): AnyStruct {
-        let levelCollectionRef = getAccount(address)
-            .getCapability<&{BlindNinjaCore.LevelCollectionPublic}>(/public/levelCollection)
-            .borrow()
-            ?? panic("Could not borrow reference to the level collection")
+        pub fun main(address: Address, levelName: String): AnyStruct {
+            let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
+            level.initializeLevel()
+            let activeLevel = level.getInitialLevel()
 
-        let level = levelCollectionRef.getLevel(levelName)
-
-        let activeLevel = level.getInitialLevel()
-        return {
-            "name": level.name,
-            "visuals": level.visuals,
-            "map": activeLevel.map,
-            "gameObjects": activeLevel.gameObjects
+            return {
+                "name": level.name,
+                "visuals": level.visuals,
+                "map": activeLevel.map,
+                "gameObjects": activeLevel.gameObjects
+            }
         }
-    }
     `
     const result = await fcl.query({
         cadence: script,
@@ -59,21 +56,28 @@ export async function getInitialBoard(address, levelName) {
 
 export async function executeLevel(address, levelName, moves) {
     const script = `
-    import BlindNinjaCore from ${BlindNinjaCore}
-
-    pub fun main(address: Address, levelName: String, moveSequence: [String]): AnyStruct {
-        let levelCollectionRef = getAccount(address)
-            .getCapability<&{BlindNinjaCore.LevelCollectionPublic}>(/public/levelCollection)
-            .borrow()
-            ?? panic("Could not borrow reference to the level collection")
-
-        let level: &{BlindNinjaCore.Level} = levelCollectionRef.getLevel(levelName)
-        let levelSaveState <- BlindNinjaCore.createLevelSaveState(level, moveSequence)
-        let saveState: &BlindNinjaCore.LevelSaveState = &levelSaveState as &BlindNinjaCore.LevelSaveState
-        let ticks: [BlindNinjaCore.LevelResult] = level.executeFullLevel(level: saveState)
-        destroy levelSaveState
-        return ticks
-    }
+        import BlindNinjaCore from ${BlindNinjaCore}
+        import BlindNinjaLevel from ${BlindNinjaCore}
+        
+        pub fun main(address: Address, levelName: String, moveSequence: [String]): AnyStruct {
+            let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
+            level.initializeLevel()
+            
+            let levelSaveState: @BlindNinjaCore.LevelSaveState <- BlindNinjaCore.createLevelSaveState(
+                address: address,
+                levelName: levelName,
+                map: level.map,
+                gameObjects: level.gameObjects,
+                gameboard: level.gameboard,
+                state: level.state,
+                moveSequence: moveSequence,
+            )
+            let saveState: &BlindNinjaCore.LevelSaveState = &levelSaveState as &BlindNinjaCore.LevelSaveState
+            let ticks: [BlindNinjaCore.LevelResult] = level.executeFullLevel(level: saveState)
+            destroy levelSaveState
+            
+            return ticks
+        }
     `
     var movesArray = []
     for (const m of moves) {

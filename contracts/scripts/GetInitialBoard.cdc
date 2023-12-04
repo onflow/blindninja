@@ -1,14 +1,11 @@
 import "BlindNinjaCore"
+import "BlindNinjaLevel"
 
 pub fun main(address: Address, levelName: String): AnyStruct {
-  let levelCollectionRef = getAccount(address)
-    .getCapability<&{BlindNinjaCore.LevelCollectionPublic}>(/public/levelCollection)
-    .borrow()
-    ?? panic("Could not borrow reference to the level collection")
-  
-  let level = levelCollectionRef.getLevel(levelName)
-
+  let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
+  level.initializeLevel()
   let activeLevel = level.getInitialLevel()
+
   return {
     "name": level.name,
     "visuals": level.visuals,

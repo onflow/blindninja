@@ -1,7 +1,7 @@
 {
 	"contracts": {
 		"BlindNinjaCore": "contracts/BlindNinjaCore.cdc",
-		"ComposableLevel": "contracts/ComposableLevel.cdc",
+		"BlindNinjaLevel": "contracts/BlindNinjaLevel.cdc",
 		"ExampleNFT": {
 			"source": "",
 			"aliases": {
@@ -20,6 +20,7 @@
 				"emulator": "0ae53cb6e3f42a79"
 			}
 		},
+		"FogLevel": "contracts/FogLevel.cdc",
 		"FungibleToken": {
 			"source": "",
 			"aliases": {
@@ -27,6 +28,7 @@
 			}
 		},
 		"GenericLevelComponents": "contracts/GenericLevelComponents.cdc",
+		"IntroLevel": "contracts/IntroLevel.cdc",
 		"MetadataViews": {
 			"source": "",
 			"aliases": {
@@ -56,7 +58,8 @@
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7"
 			}
-		}
+		},
+		"WallsLevel": "contracts/WallsLevel.cdc"
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -73,10 +76,17 @@
 			"key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
 		},
 		"testnet-account": {
-			"address": "622966173915e22a",
+			"address": "598e55be1da28f73",
 			"key": {
 				"type": "file",
 				"location": "testnet-account.pkey"
+			}
+		},
+		"testnet-samples-account": {
+			"address": "565438380ef09966",
+			"key": {
+				"type": "file",
+				"location": "testnet-samples-account.pkey"
 			}
 		}
 	},
@@ -84,15 +94,23 @@
 		"emulator": {
 			"default": [
 				"BlindNinjaCore",
-				"ComposableLevel",
-				"GenericLevelComponents"
+				"BlindNinjaLevel",
+				"FogLevel",
+				"GenericLevelComponents",
+				"IntroLevel",
+				"WallsLevel"
 			]
 		},
 		"testnet": {
 			"testnet-account": [
 				"BlindNinjaCore",
-				"ComposableLevel",
-				"GenericLevelComponents"
+				"BlindNinjaLevel"
+			],
+			"testnet-samples-account": [
+				"GenericLevelComponents",
+				"IntroLevel",
+				"WallsLevel",
+				"FogLevel"
 			]
 		}
 	}
