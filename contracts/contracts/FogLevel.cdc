@@ -1,12 +1,18 @@
 import "BlindNinjaCore"
-import "GenericLevelComponents"
 import "BlindNinjaLevel"
+import "Ninja"
+import "Flag"
+import "Wall"
+import "NinjaMovementMechanic"
+import "NinjaTouchGoalWinCondition"
+import "WallMechanic"
+import "CenteredCameraMechanic"
 
 // This composable level provides an easy way to create a BlindNinja
 // level using core blind ninja core interfaces as drivers within it.
 pub contract FogLevel: BlindNinjaLevel {
   access(all) var name: String
-  access(all) var map: {BlindNinjaCore.Map}
+  access(all) var map: BlindNinjaCore.Map
   access(all) var gameObjects: {Int: {BlindNinjaCore.GameObject}}
   access(all) var mechanics: [{BlindNinjaCore.GameMechanic}]
   access(all) var visuals: [{BlindNinjaCore.VisualElement}]
@@ -19,12 +25,12 @@ pub contract FogLevel: BlindNinjaLevel {
     let gameObjects: {Int: {BlindNinjaCore.GameObject}} = {}
     
     // Create the ninja for the map
-    let ninja = GenericLevelComponents.GenericNinja(id: 1)
+    let ninja = Ninja.GameObject(id: 1)
     ninja.setReferencePoint([4,4])
     gameObjects[Int(ninja.id)] = ninja
 
     // Create the flag to place on the map
-    let flag = GenericLevelComponents.Flag(id: 2)
+    let flag = Flag.GameObject(id: 2)
     flag.setReferencePoint([10,5])
     gameObjects[Int(flag.id)] = flag
 
@@ -33,7 +39,7 @@ pub contract FogLevel: BlindNinjaLevel {
     var y = 3
     var wallID = 3
     while (wallID <= 5) {
-      let wall = GenericLevelComponents.Wall(id: UInt64(wallID))
+      let wall = Wall.GameObject(id: UInt64(wallID))
       wall.setReferencePoint([5,y])
       gameObjects[Int(wall.id)] = wall
       y = y + 1
@@ -42,7 +48,7 @@ pub contract FogLevel: BlindNinjaLevel {
 
     y = 0
     while (wallID <= 15) {
-      let wall = GenericLevelComponents.Wall(id: UInt64(wallID))
+      let wall = Wall.GameObject(id: UInt64(wallID))
       wall.setReferencePoint([3,y])
       gameObjects[Int(wall.id)] = wall
       y = y + 1
@@ -52,26 +58,26 @@ pub contract FogLevel: BlindNinjaLevel {
     // Create a move mechanic which makes it so that
     // the ninja moves according to the inputted sequence
     // for the level.
-    let moveMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.NinjaMovement(ninjaID: 1)
+    let moveMechanic: {BlindNinjaCore.GameMechanic} = NinjaMovementMechanic.Mechanic(ninjaID: 1)
 
     // Create a wall mechanic, that makes it so that if a ninja
     // runs into the wall, their movement is reverted back.
     // This is to meant to run after the move mechanic.
-    let wallMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.WallMechanic(ninjaID: 1, wallType: Type<GenericLevelComponents.Wall>())
+    let wallMechanic: {BlindNinjaCore.GameMechanic} = WallMechanic.Mechanic(ninjaID: 1, wallType: Type<Wall.GameObject>())
 
     // Center the camera around the ninja at the end of each tick.
-    let centeredCameraMechanic: {BlindNinjaCore.GameMechanic} = GenericLevelComponents.CenteredCamera(centeredObjectID: 1)
+    let centeredCameraMechanic: {BlindNinjaCore.GameMechanic} = CenteredCameraMechanic.Mechanic(centeredObjectID: 1)
 
     // Create a win condition for the level, where the ninja
     // must touch the flag to win.
-    let winCondition = GenericLevelComponents.NinjaTouchGoal(
+    let winCondition = NinjaTouchGoalWinCondition.WinCondition(
       ninjaID: ninja.id,
       goalID: flag.id
     )
 
     // Set all of the contract level variables
     self.name = "Intro Level"
-    self.map = GenericLevelComponents.Map(
+    self.map = BlindNinjaCore.Map(
       anchorX: 0,
       anchorY: 0,
       viewWidth: 9,
@@ -92,7 +98,7 @@ pub contract FogLevel: BlindNinjaLevel {
   // instead, and move all initialization code to 'init' below
   init() {
     self.name = "Intro Level"
-    self.map = GenericLevelComponents.Map(
+    self.map = BlindNinjaCore.Map(
       anchorX: 0,
       anchorY: 0,
       viewWidth: 20,

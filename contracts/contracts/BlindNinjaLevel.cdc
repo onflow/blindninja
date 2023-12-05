@@ -5,7 +5,7 @@ pub contract interface BlindNinjaLevel {
 
   // The map and gameobjects can and likely will change during
   //  a game to represent changes in view or gameobject
-  access(all) var map: {BlindNinjaCore.Map}
+  access(all) var map: BlindNinjaCore.Map
   access(all) var gameObjects: {Int: {BlindNinjaCore.GameObject}}
 
   // Mechanics are run on every tick, in the order of the given array.

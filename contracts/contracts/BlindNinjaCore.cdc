@@ -1,11 +1,18 @@
 pub contract BlindNinjaCore {
 
   // Interface for defining the map structure in the game.
-  pub struct interface Map {
+  pub struct Map {
     pub let anchorX: Int
     pub let anchorY: Int
     pub let viewWidth: Int
     pub let viewHeight: Int
+
+    init(anchorX: Int, anchorY: Int, viewWidth: Int, viewHeight: Int) {
+      self.anchorX = anchorX
+      self.anchorY = anchorY
+      self.viewWidth = viewWidth
+      self.viewHeight = viewHeight
+    }
   }
 
   // Interface for game objects within the game environment.
@@ -117,11 +124,11 @@ pub contract BlindNinjaCore {
 
   // Struct to hold the result of a level in the game.
   pub struct LevelResult {
-    pub let map: {Map}
+    pub let map: Map
     pub let gameObjects: {Int: {GameObject}}
     pub let hasWonGame: Bool
 
-    init(map: {Map}, gameObjects: {Int: {GameObject}}, hasWonGame: Bool) {
+    init(map: Map, gameObjects: {Int: {GameObject}}, hasWonGame: Bool) {
       self.map = map
       self.gameObjects = gameObjects
       self.hasWonGame = hasWonGame
@@ -135,7 +142,7 @@ pub contract BlindNinjaCore {
   pub resource LevelSaveState {
     access(all) var levelAddress: Address
     access(all) var levelName: String
-    access(all) var map: {Map}
+    access(all) var map: Map
     access(all) let gameObjects: {Int: {GameObject}}
     access(all) let gameboard: GameBoard
     access(all) let state: {String: AnyStruct}
@@ -160,11 +167,11 @@ pub contract BlindNinjaCore {
       self.gameObjects[id] = gameObject
     }
     
-    access(all) fun setMap(_ map: {Map}) {
+    access(all) fun setMap(_ map: Map) {
       self.map = map
     }
 
-    init(levelAddress: Address, levelName: String, map: {Map}, gameObjects: {Int: {GameObject}}, gameboard: GameBoard, state: {String: AnyStruct}, sequence: [String]) {
+    init(levelAddress: Address, levelName: String, map: Map, gameObjects: {Int: {GameObject}}, gameboard: GameBoard, state: {String: AnyStruct}, sequence: [String]) {
       self.levelAddress = levelAddress
       self.levelName = levelName
       self.map = map
@@ -181,7 +188,7 @@ pub contract BlindNinjaCore {
   pub fun createLevelSaveState(
     address: Address,
     levelName: String,
-    map: {Map},
+    map: Map,
     gameObjects: {Int: {GameObject}},
     gameboard: GameBoard,
     state: {String: AnyStruct},

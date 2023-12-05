@@ -1,6 +1,6 @@
 import * as fcl from "@onflow/fcl"
 
-const BlindNinjaCore = "0xaa6a83c32bb0a095"
+const BlindNinjaCore = "0xbe46c97f5d5fdab9"
 
 function renderFrame(frame) {
     var board = new Array(Number(frame.map.viewWidth))

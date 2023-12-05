@@ -1,7 +1,11 @@
 {
 	"contracts": {
 		"BlindNinjaCore": "contracts/BlindNinjaCore.cdc",
+		"BlindNinjaGameObject": "contracts/BlindNinjaGameObject.cdc",
 		"BlindNinjaLevel": "contracts/BlindNinjaLevel.cdc",
+		"BlindNinjaMechanic": "contracts/BlindNinjaMechanic.cdc",
+		"BlindNinjaWinCondition": "contracts/BlindNinjaWinCondition.cdc",
+		"CenteredCameraMechanic": "contracts/CenteredCameraMechanic.cdc",
 		"ExampleNFT": {
 			"source": "",
 			"aliases": {
@@ -14,6 +18,7 @@
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
+		"Flag": "contracts/Flag.cdc",
 		"FlowToken": {
 			"source": "",
 			"aliases": {
@@ -27,7 +32,6 @@
 				"emulator": "ee82856bf20e2aa6"
 			}
 		},
-		"GenericLevelComponents": "contracts/GenericLevelComponents.cdc",
 		"IntroLevel": "contracts/IntroLevel.cdc",
 		"MetadataViews": {
 			"source": "contracts/MetadataViews.cdc",
@@ -47,6 +51,9 @@
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
+		"Ninja": "contracts/Ninja.cdc",
+		"NinjaMovementMechanic": "contracts/NinjaMovementMechanic.cdc",
+		"NinjaTouchGoalWinCondition": "contracts/NinjaTouchGoalWinCondition.cdc",
 		"NonFungibleToken": {
 			"source": "",
 			"aliases": {
@@ -59,6 +66,8 @@
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
+		"Wall": "contracts/Wall.cdc",
+		"WallMechanic": "contracts/WallMechanic.cdc",
 		"WallsLevel": "contracts/WallsLevel.cdc"
 	},
 	"networks": {
@@ -76,14 +85,14 @@
 			"key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
 		},
 		"testnet-account": {
-			"address": "aa6a83c32bb0a095",
+			"address": "be46c97f5d5fdab9",
 			"key": {
 				"type": "file",
 				"location": "testnet-account.pkey"
 			}
 		},
 		"testnet-samples-account": {
-			"address": "afff9a8fcdf1f20f",
+			"address": "5a2170a24ca5da66",
 			"key": {
 				"type": "file",
 				"location": "testnet-samples-account.pkey"
@@ -94,22 +103,40 @@
 		"emulator": {
 			"default": [
 				"BlindNinjaCore",
+				"BlindNinjaGameObject",
 				"BlindNinjaLevel",
+				"BlindNinjaMechanic",
+				"BlindNinjaWinCondition",
+				"CenteredCameraMechanic",
+				"Flag",
 				"FogLevel",
-				"GenericLevelComponents",
 				"IntroLevel",
+				"Ninja",
+				"NinjaMovementMechanic",
+				"NinjaTouchGoalWinCondition",
+				"Wall",
+				"WallMechanic",
 				"WallsLevel"
 			]
 		},
 		"testnet": {
 			"testnet-account": [
 				"BlindNinjaCore",
-				"BlindNinjaLevel"
+				"BlindNinjaGameObject",
+				"BlindNinjaLevel",
+				"BlindNinjaMechanic",
+				"BlindNinjaWinCondition"
 			],
 			"testnet-samples-account": [
-				"GenericLevelComponents",
+				"CenteredCameraMechanic",
+				"Flag",
 				"FogLevel",
 				"IntroLevel",
+				"Ninja",
+				"NinjaMovementMechanic",
+				"NinjaTouchGoalWinCondition",
+				"Wall",
+				"WallMechanic",
 				"WallsLevel"
 			]
 		}
