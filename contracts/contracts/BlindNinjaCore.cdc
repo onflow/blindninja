@@ -1,4 +1,3 @@
-
 pub contract BlindNinjaCore {
 
   // Interface for defining the map structure in the game.
@@ -12,6 +11,8 @@ pub contract BlindNinjaCore {
   // Interface for game objects within the game environment.
   pub struct interface GameObject {
     pub var id: UInt64
+    access(all) var name: String
+    access(all) var description: String
     pub var type: String
     pub var referencePoint: [Int]
     pub var display: String
@@ -28,13 +29,16 @@ pub contract BlindNinjaCore {
 
   // Interface for game mechanics which can affect the game state.
   pub struct interface GameMechanic {
-    pub let name: String
-    pub fun tick(_ level: &BlindNinjaCore.LevelSaveState)
+    access(all) let name: String
+    access(all) let description: String
+    access(all) fun tick(_ level: &BlindNinjaCore.LevelSaveState)
   }
 
   // Interface for defining conditions to win the game.
   pub struct interface WinCondition {
-    pub fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool
+    access(all) let name: String
+    access(all) let description: String
+    access(all) fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool
   }
 
   // Interface for visual elements within the game.

@@ -30,7 +30,7 @@
 		"GenericLevelComponents": "contracts/GenericLevelComponents.cdc",
 		"IntroLevel": "contracts/IntroLevel.cdc",
 		"MetadataViews": {
-			"source": "",
+			"source": "contracts/MetadataViews.cdc",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7"
 			}
@@ -76,14 +76,14 @@
 			"key": "6d12eebfef9866c9b6fa92b97c6e705c26a1785b1e7944da701fc545a51d4673"
 		},
 		"testnet-account": {
-			"address": "598e55be1da28f73",
+			"address": "aa6a83c32bb0a095",
 			"key": {
 				"type": "file",
 				"location": "testnet-account.pkey"
 			}
 		},
 		"testnet-samples-account": {
-			"address": "565438380ef09966",
+			"address": "afff9a8fcdf1f20f",
 			"key": {
 				"type": "file",
 				"location": "testnet-samples-account.pkey"
@@ -108,9 +108,9 @@
 			],
 			"testnet-samples-account": [
 				"GenericLevelComponents",
+				"FogLevel",
 				"IntroLevel",
-				"WallsLevel",
-				"FogLevel"
+				"WallsLevel"
 			]
 		}
 	}

@@ -5,6 +5,7 @@ pub contract GenericLevelComponents {
   // Provide a ninja's ID, and the ninja will move according to the current sequence number each tick
   pub struct NinjaMovement: BlindNinjaCore.GameMechanic {
     pub let name: String
+    pub let description: String
     pub let ninjaID: UInt64
 
     pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
@@ -31,6 +32,7 @@ pub contract GenericLevelComponents {
 
     init(ninjaID: UInt64) {
       self.name = "Ninja Movement"
+      self.description = "This mechanic allows a ninja to move according to the current sequence number each tick."
       self.ninjaID = ninjaID
     }
   }
@@ -38,6 +40,7 @@ pub contract GenericLevelComponents {
   // Prevents a ninja from coinciding with a wall
   pub struct WallMechanic: BlindNinjaCore.GameMechanic {
     pub let name: String
+    pub let description: String
     pub let ninjaID: UInt64
     pub let wallType: Type
 
@@ -81,6 +84,7 @@ pub contract GenericLevelComponents {
 
     init(ninjaID: UInt64, wallType: Type) {
       self.name = "Wall blocks ninja"
+      self.description = "This mechanic prevents the ninjas with a given ID from moving into a wall of a given struct type."
       self.ninjaID = ninjaID
       self.wallType = wallType
     }
@@ -93,6 +97,7 @@ pub contract GenericLevelComponents {
   // that should be manually done by the game itself at creation time.
   pub struct CenteredCamera: BlindNinjaCore.GameMechanic {
     pub let name: String
+    pub let description: String
     pub let centeredObjectID: UInt64
 
     pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
@@ -110,6 +115,7 @@ pub contract GenericLevelComponents {
 
     init(centeredObjectID: UInt64) {
       self.name = "Centered Camera"
+      self.description = "This mechanic centers the camera on the object with the provided ID."
       self.centeredObjectID = centeredObjectID
     }
   }
@@ -129,6 +135,8 @@ pub contract GenericLevelComponents {
   }
 
   pub struct NinjaTouchGoal: BlindNinjaCore.WinCondition {
+    access(all) let name: String
+    access(all) let description: String
     access(all) let ninjaID: UInt64
     access(all) let goalID: UInt64
 
@@ -154,12 +162,16 @@ pub contract GenericLevelComponents {
     }
     
     init(ninjaID: UInt64, goalID: UInt64) {
+      self.name = "Ninja Touch Goal"
+      self.description = "This win condition checks if the ninja has touched the goal."
       self.ninjaID = ninjaID
       self.goalID = goalID
     }
   }
 
   pub struct GenericNinja: BlindNinjaCore.GameObject {
+    pub var name: String
+    pub var description: String
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
@@ -170,10 +182,14 @@ pub contract GenericLevelComponents {
       self.type = "BlindNinja"
       self.referencePoint = [0,0]
       self.display = "🥷"
+      self.name = "Generic Ninja"
+      self.description = "A generic ninja character in the game."
     }
   }
 
   pub struct Flag: BlindNinjaCore.GameObject {
+    pub var name: String
+    pub var description: String
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
@@ -184,10 +200,14 @@ pub contract GenericLevelComponents {
       self.type = "Flag"
       self.referencePoint = [0,0]
       self.display = "🏁"
+      self.name = "Flag"
+      self.description = "A flag object in the game."
     }
   }
 
   pub struct Wall: BlindNinjaCore.GameObject {
+    pub var name: String
+    pub var description: String
     pub var id: UInt64
     pub var type: String
     pub var referencePoint: [Int]
@@ -198,6 +218,8 @@ pub contract GenericLevelComponents {
       self.type = "Wall"
       self.referencePoint = [0,0]
       self.display = "🧱"
+      self.name = "Wall"
+      self.description = "A wall object in the game."
     }
   }
   
