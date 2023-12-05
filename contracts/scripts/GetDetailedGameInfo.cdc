@@ -24,7 +24,7 @@ pub fun addTypesToGameObjects(_ map: {Int: {BlindNinjaCore.GameObject}}): {Int: 
   return newMap
 }
 
-pub fun addTypeToMap(_ mapObj: {BlindNinjaCore.Map}): {String: AnyStruct} {
+pub fun addTypeToMap(_ mapObj: BlindNinjaCore.Map): {String: AnyStruct} {
   let newMap: {String: AnyStruct} = {
     "data": mapObj,
     "type": mapObj.getType()

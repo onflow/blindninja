@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
           <Theme accentColor="grass" radius="large">
           <Flex direction="column" style={{ height: '100vh'}}>
             <Navbar/>
-            <Container py="8" size="4">
+            <Container py="4" size="4">
               {children}
             </Container>
           </Flex>

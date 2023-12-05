@@ -5,6 +5,7 @@ import { Flex, Button, Box, TextArea, Badge, Code, Text, Tabs } from '@radix-ui/
 
 import Board from '@/components/game/Board.js'
 import GameResult from '@/components/game/GameResult.js'
+import GameDetails from '@/components/game/GameDetails'
 
 import { executeLevel, getInitialBoard } from '@/lib/engine'
 
@@ -39,14 +40,16 @@ const Game = ({ address, levelName }) => {
         <Flex gap="3" direction="column">
           <Flex align="baseline">
             <Flex ml="0" gap="3" align="baseline">
+              <Text size="4" weight="bold">{levelName}</Text>
+            </Flex>
+            <Flex mr="0" grow="1" gap="3" justify="end">
               <Code variant="ghost">{address}</Code>
               <Badge variant="surface">Testnet</Badge>
             </Flex>
-            <Flex mr="0" grow="1" justify="end">
-              <Text size="4" weight="bold">{levelName}</Text>
-            </Flex>
           </Flex>
-
+          <Box style={{ width: '700px', height: '16px', marginBottom: '10px' }}>
+            <GameDetails address={address} levelName={levelName}></GameDetails>
+          </Box>
           <Box style={{ width: '700px', height: '700px'}}>
             <Board board={board}/>
           </Box>

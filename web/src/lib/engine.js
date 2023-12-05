@@ -148,7 +148,7 @@ export async function getDetailedGameInfo(address, levelName) {
             return newMap
         }
         
-        pub fun addTypeToMap(_ mapObj: {BlindNinjaCore.Map}): {String: AnyStruct} {
+        pub fun addTypeToMap(_ mapObj: BlindNinjaCore.Map): {String: AnyStruct} {
             let newMap: {String: AnyStruct} = {
             "data": mapObj,
             "type": mapObj.getType()
@@ -176,7 +176,6 @@ export async function getDetailedGameInfo(address, levelName) {
             }
         }
     `
-
     const result = await fcl.query({
         cadence: script,
         args: (arg, t) => [
@@ -184,6 +183,8 @@ export async function getDetailedGameInfo(address, levelName) {
             arg(levelName, t.String)
         ]
     })
+    
+    console.log('Detailed game info is', result)
 
     return result
 }
