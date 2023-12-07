@@ -12,6 +12,9 @@ export default function Home() {
       <Link size="4" weight="light" href="/0x5a2170a24ca5da66/FogLevel">
         0x5a2170a24ca5da66 - FogLevel
       </Link>
+      <Link size="4" weight="light" href="/0x5a2170a24ca5da66/CatchTheFlagLevel">
+        0x5a2170a24ca5da66 - CatchTheFlagLevel
+      </Link>
     </Flex>
   )
 }

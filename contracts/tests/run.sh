@@ -9,3 +9,7 @@ flow scripts execute ./scripts/ExecuteGame.cdc 0x01cf0e2f2f715450 WallsLevel '["
 
 echo "\n\Running game with fog mechanic"
 flow scripts execute ./scripts/ExecuteGame.cdc 0x01cf0e2f2f715450 FogLevel '["ArrowRight","ArrowRight", "ArrowRight", "ArrowRight", "ArrowRight", "ArrowRight"]'
+
+echo "\n\Running game with runaway flag mechanic"
+flow scripts execute ./scripts/ExecuteGame.cdc 0x01cf0e2f2f715450 CatchTheFlagLevel '["ArrowRight","ArrowRight", "ArrowRight"]'
+
