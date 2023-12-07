@@ -142,7 +142,7 @@ const Game = ({ address, levelName }) => {
               >
                 { state === 'ready' && 'Simulate (Space Bar)' }
                 { state === 'executing' && 'Executing ...' }
-                { state === 'executed' && 'Done (Space to Reset)' }
+                { state === 'executed' && 'Done (Space to Replay)' }
               </Button>
 
               <Box py="2">
