@@ -1,18 +1,13 @@
 'use client'
 
-import { useEffect, useState, Fragment } from 'react'
+import { Fragment } from 'react'
 import { Flex, Badge, Text } from '@radix-ui/themes'
 import * as Popover from '@radix-ui/react-popover';
+import { useTheme } from 'next-themes';
 
-import { getDetailedGameInfo } from '@/lib/engine'
-
-const GameDetails = ({ address, levelName }) => {
-
-  const [gameDetails, setGameDetails] = useState({
-    gameObjects: null,
-    mechanics: null,
-    winConditions: null
-  })
+const GameDetails = ({ gameDetails }) => {
+  const { resolvedTheme } = useTheme()
+  const isDarkMode = resolvedTheme && resolvedTheme === 'dark'
 
   const keys = [
     {
@@ -32,12 +27,6 @@ const GameDetails = ({ address, levelName }) => {
     }
   ]
 
-  useEffect(() => {
-    (async () => {
-      setGameDetails(await getDetailedGameInfo(address, levelName))
-    })().catch(console.error)
-  }, [])
-
   return (
       <Flex gap="3" justify="left">
         {
@@ -53,12 +42,11 @@ const GameDetails = ({ address, levelName }) => {
                   <Popover.Content
                     sideOffset={5}
                     style={{
-                      backgroundColor: '#2f2f2f',
+                      backgroundColor: isDarkMode ? '#2f2f2f' : '#fdfdfd',
                       border: '1px solid #1f1f1f',
                       borderRadius: '6px',
                       padding: '16px',
-                      maxWidth: '300px',
-                      color: '#ffffff'
+                      maxWidth: '300px'
                     }}
                   >
                     {

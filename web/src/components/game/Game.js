@@ -5,16 +5,35 @@ import { Flex, Button, Box, TextArea, Badge, Code, Text, Tabs } from '@radix-ui/
 
 import Board from '@/components/game/Board.js'
 import GameResult from '@/components/game/GameResult.js'
-import GameDetails from '@/components/game/GameDetails'
+import GameDetails from '@/components/game/GameDetails.js'
+import GameInput from '@/components/game/GameInput.js'
 
-import { executeLevel, getInitialBoard } from '@/lib/engine'
+import { executeLevel, getInitialBoard, getDetailedGameInfo } from '@/lib/engine'
+
+// Since we are using a window level document listener for key-presses
+// this is needed to keep track of the moves since we lose scope in the
+// key press listener.
+var globalMoves = ""
 
 const Game = ({ address, levelName }) => {
 
   const [moves, setMoves] = useState('')
   const [board, setBoard] = useState()
   const [state, setState] = useState('ready')
+  const [frameIndex, setFrameIndex] = useState(0)
   const [gameResults, setGameResults] = useState()
+  const [gameDetails, setGameDetails] = useState({
+    gameObjects: null,
+    mechanics: null,
+    winConditions: null
+  })
+
+  useEffect(() => {
+    (async () => {
+      setGameDetails(await getDetailedGameInfo(address, levelName))
+    })().catch(console.error)
+  }, [])
+
 
   useEffect(() => {
     (async () => {
@@ -22,14 +41,37 @@ const Game = ({ address, levelName }) => {
     })().catch(console.error)
   }, [])
 
+  useEffect(() => {
+    globalMoves = moves
+  }, [moves])
+
+  useEffect(() => {
+    const handleKeyPress = async (event) => {
+      if (event.key === 'r' || event.key === 'R') {
+        resetGame();
+      }
+      if (event.key === ' ') {
+        run();
+      }
+    };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
+
   async function run() {
+    setFrameIndex(0)
     setState('executing')
-    setGameResults(await executeLevel(address, levelName, moves))
+    const executedLevel = await executeLevel(address, levelName, globalMoves)
+    setGameResults(executedLevel)
     setState('executed')
   }
 
   async function resetGame() {
+    setFrameIndex(0)
     setState('ready')
+    setMoves('')
     setGameResults()
     setBoard(await getInitialBoard(address, levelName))
   }
@@ -48,7 +90,7 @@ const Game = ({ address, levelName }) => {
             </Flex>
           </Flex>
           <Box style={{ width: '700px', height: '16px', marginBottom: '10px' }}>
-            <GameDetails address={address} levelName={levelName}></GameDetails>
+            <GameDetails gameDetails={gameDetails}></GameDetails>
           </Box>
           <Box style={{ width: '700px', height: '700px'}}>
             <Board board={board}/>
@@ -71,32 +113,43 @@ const Game = ({ address, levelName }) => {
               <Kbd>↓</Kbd>
               <Kbd>→</Kbd>
               <Kbd>←</Kbd> */}
-              <Code>
-                L - ArrowLeft  <br/>
-                U - ArrowUp <br/>
-                R - ArrowRight <br/>
-                D - ArrowDown <br/>
-              </Code>
-              <TextArea
-                placeholder="Enter moves (e.g. RRLLDUL)"
-                value={moves}
-                disabled={state != 'ready'}
-                onChange={(e) => setMoves(e.target.value.toUpperCase())}
+              <Text weight={"bold"} style={{ marginTop: '10px' }}>How to Play</Text>
+              <Text size="2">Give some instructions to the blind ninja and he will follow your lead!</Text>
+              <Text weight={"bold"} style={{ marginTop: '10px' }}>How to Win</Text>
+              <Text size="2">
+                {
+                  gameDetails && gameDetails["winConditions"] && Object.keys(gameDetails["winConditions"]).map((key) => {
+                    return (
+                      <>
+                        {gameDetails["winConditions"][key].data.description}
+                      </>
+                    )
+                  })
+                }
+              </Text>
+
+              <Text weight={"bold"} style={{ marginTop: '10px' }}>Controls</Text>
+              
+              <GameInput
+                moves={moves}
+                addMove={(move) => { setMoves(moves + move) }}
+                frameIndex={frameIndex}
               />
 
               <Button
                 onClick={run}
                 disabled={state != 'ready'}
               >
-                { state === 'ready' && 'Simulate' }
+                { state === 'ready' && 'Simulate (Space Bar)' }
                 { state === 'executing' && 'Executing ...' }
-                { state === 'executed' && 'Done' }
+                { state === 'executed' && 'Done (Space to Reset)' }
               </Button>
 
-              <Box py="8">
+              <Box py="2">
                 <GameResult
                   resetGameFunc={resetGame}
                   setBoardFunc={setBoard}
+                  setFrameIndexFunc={setFrameIndex}
                   results={gameResults}
                 />
               </Box>

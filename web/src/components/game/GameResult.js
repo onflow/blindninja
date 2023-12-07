@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { Flex, Text, Button } from '@radix-ui/themes'
 
-const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
+const GameResult = ({ results, resetGameFunc, setBoardFunc, setFrameIndexFunc }) => {
 
     var frameIndex = 0
     var [ playing, setPlaying ] = useState(false)
@@ -12,6 +12,7 @@ const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
         setTimeout(() => {
             setBoardFunc(results.frames[frameIndex])
             frameIndex++
+            setFrameIndexFunc(frameIndex)
             if (frameIndex < results.frames.length) {
                 advanceFrame()
             } else {
@@ -27,36 +28,28 @@ const GameResult = ({ results, resetGameFunc, setBoardFunc }) => {
     }, [results])
 
     return (
-        <Flex gap="3" direction="column">
-
-            {results ? (
-
-                <Flex gap="2">
-                    <Text>Win: </Text>
-                    <Text
-                        weight="bold"
-                        color={results.haswon? 'green': 'red'}
-                    >
-                        {results.haswon? 'Yes': 'No'}
-                    </Text>
-                </Flex>
-            ):(
-                <Text>Waiting for player</Text>
-            )}
-
-            <Button
-                onClick={advanceFrame}
-                disabled={!results || playing}
-            >
-                Watch Again
-            </Button>
-
+        <Flex gap="3" direction="column">            
             <Button
                 onClick={resetGameFunc}
                 disabled={!results || playing}
             >
-                Reset
+                Reset (R)
             </Button>
+
+            {results ? (
+
+            <Flex style={{paddingTop: '20px'}} gap="2">
+                <Text>Win: </Text>
+                <Text
+                    weight="bold"
+                    color={results.haswon? 'green': 'red'}
+                >
+                    {results.haswon? 'Yes': 'No'}
+                </Text>
+            </Flex>
+            ):(
+            <Text></Text>
+            )}
         </Flex>
     )
 }
