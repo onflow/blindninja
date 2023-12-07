@@ -1,10 +1,11 @@
+'use client'
 
 import { Flex, Box, Text} from '@radix-ui/themes'
 import { useEffect } from 'react';
 import { useTheme } from 'next-themes'
 
 const ArrowBox = ({ children, withBorders, isDarkMode }) => {
-  
+  const bgColor = isDarkMode ? '#333' : '#dfdfdf'
   return (
     <Box style={{ 
       width: '100%', 
@@ -16,7 +17,7 @@ const ArrowBox = ({ children, withBorders, isDarkMode }) => {
       border: withBorders ? '1px solid black' : 'none',
       fontFamily: 'Arial, sans-serif',
       fontWeight: 'bold',
-      backgroundColor: withBorders ? isDarkMode ? '#333' : '#dfdfdf' : '',
+      backgroundColor: withBorders ? bgColor : '',
       borderRadius: '10px'
     }}>
       {children}
@@ -26,7 +27,7 @@ const ArrowBox = ({ children, withBorders, isDarkMode }) => {
 
 const GameInput = ({ moves, addMove, frameIndex }) => {
   const { resolvedTheme } = useTheme()
-  const isDarkMode = resolvedTheme && resolvedTheme === 'dark'
+  const isDarkMode = !resolvedTheme || resolvedTheme === 'dark'
 
   useEffect(() => {
     const handleKeyPress = (event) => {

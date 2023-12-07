@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 import { Flex, Button, Box, TextArea, Badge, Code, Text, Tabs } from '@radix-ui/themes'
 
 import Board from '@/components/game/Board.js'
@@ -118,11 +118,11 @@ const Game = ({ address, levelName }) => {
               <Text weight={"bold"} style={{ marginTop: '10px' }}>How to Win</Text>
               <Text size="2">
                 {
-                  gameDetails && gameDetails["winConditions"] && Object.keys(gameDetails["winConditions"]).map((key) => {
+                  gameDetails && gameDetails["winConditions"] && Object.keys(gameDetails["winConditions"]).map((key, i) => {
                     return (
-                      <>
+                      <Fragment key={i}>
                         {gameDetails["winConditions"][key].data.description}
-                      </>
+                      </Fragment>
                     )
                   })
                 }
