@@ -14,7 +14,7 @@ const GameDetails = ({ gameDetails }) => {
       key: 'gameObjects',
       label: 'Objects',
       color: 'green'
-    }, 
+    },
     {
       key: 'mechanics',
       label: 'Features',
@@ -76,7 +76,7 @@ const GameDetails = ({ gameDetails }) => {
                                 </Badge>
                               </Text>
                               <br/>
-                              <Text style={{ fontSize: '12px', opacity: 0.7 }}>{address}</Text>
+                              <Text style={{ fontSize: '12px', opacity: 0.7 }}>0x{address}</Text>
                               <br/>
                               <Text style={{ fontSize: '14px', lineHeight: '0.2' }}>{description}</Text>
                               <div style={{marginTop: '4px', marginBottom: '4px'}}></div>

@@ -2,7 +2,7 @@ import { Flex, Link } from '@radix-ui/themes'
 
 export default function Home() {
   return (
-    <Flex direction="column" gap="4">
+    <Flex direction="column" gap="4" mt="5">
       <Link size="4" weight="light" href="/0x5a2170a24ca5da66/IntroLevel">
         0x5a2170a24ca5da66 - IntroLevel
       </Link>

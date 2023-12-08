@@ -1,4 +1,4 @@
-import { Flex, Heading, Text, Separator } from '@radix-ui/themes'
+import { Flex, Heading, Text, Separator, Badge } from '@radix-ui/themes'
 
 import DarkModeSwitch from '@/components/ui/DarkMode.js'
 
@@ -10,8 +10,9 @@ const Navbar = () => {
                     <a href='/'>
                         <Heading>🥷 Blind Ninja</Heading>
                     </a>
-                    <Text>v0.0.1</Text>
+                    <Text>v0.1.0</Text>
                 </Flex>
+                <Badge ml="3" variant="surface">Testnet</Badge>
                 <Flex mr="2" grow="1" justify="end">
                     <DarkModeSwitch />
                 </Flex>

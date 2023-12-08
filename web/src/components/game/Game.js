@@ -8,7 +8,9 @@ import GameResult from '@/components/game/GameResult.js'
 import GameDetails from '@/components/game/GameDetails.js'
 import GameInput from '@/components/game/GameInput.js'
 
-import { executeLevel, getInitialBoard, getDetailedGameInfo } from '@/lib/engine'
+import { executeLevel, getInitialBoard, getDetailedGameInfo, fetchRemixContracts } from '@/lib/engine'
+
+import Remix from './Remix'
 
 // Since we are using a window level document listener for key-presses
 // this is needed to keep track of the moves since we lose scope in the
@@ -27,10 +29,13 @@ const Game = ({ address, levelName }) => {
     mechanics: null,
     winConditions: null
   })
+  const [remixContracts, setRemixContracts] = useState()
 
   useEffect(() => {
     (async () => {
-      setGameDetails(await getDetailedGameInfo(address, levelName))
+      let gd = await getDetailedGameInfo(address, levelName)
+      setGameDetails(gd)
+      setRemixContracts(await fetchRemixContracts(gd))
     })().catch(console.error)
   }, [])
 
@@ -86,7 +91,6 @@ const Game = ({ address, levelName }) => {
             </Flex>
             <Flex mr="0" grow="1" gap="3" justify="end">
               <Code variant="ghost">{address}</Code>
-              <Badge variant="surface">Testnet</Badge>
             </Flex>
           </Flex>
           <Box style={{ width: '700px', height: '16px', marginBottom: '10px' }}>
@@ -106,7 +110,7 @@ const Game = ({ address, levelName }) => {
             <Tabs.Trigger value="remix">Remix</Tabs.Trigger>
             <Tabs.Trigger value="info">Info</Tabs.Trigger>
           </Tabs.List>
-          <Tabs.Content value="play">
+          <Tabs.Content value="play" style={{ outline: 'none' }}>
 
             <Flex mt="5" direction="column" gap="3">
               {/* <Kbd>↑</Kbd>
@@ -129,7 +133,7 @@ const Game = ({ address, levelName }) => {
               </Text>
 
               <Text weight={"bold"} style={{ marginTop: '10px' }}>Controls</Text>
-              
+
               <GameInput
                 moves={moves}
                 addMove={(move) => { setMoves(moves + move) }}
@@ -156,11 +160,15 @@ const Game = ({ address, levelName }) => {
             </Flex>
           </Tabs.Content>
 
+          <Tabs.Content value="remix">
+            <Box mt="6">
+              <Remix gameDetails={gameDetails} contracts={remixContracts} />
+            </Box>
+          </Tabs.Content>
+
           <Tabs.Content value="info">
             <Flex mt="5" mx="3" gap="4" direction="column">
-              <Text>GameObjects</Text>
-              <Text>Mechanics</Text>
-              <Text>Visuals</Text>
+              <Text>derp</Text>
             </Flex>
           </Tabs.Content>
         </Tabs.Root>

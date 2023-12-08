@@ -7,13 +7,13 @@ import { useTheme } from 'next-themes'
 const ArrowBox = ({ children, withBorders, isDarkMode }) => {
   const bgColor = isDarkMode ? '#333' : '#dfdfdf'
   return (
-    <Box style={{ 
-      width: '100%', 
-      height: '55px', 
-      marginBottom: '10px', 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
+    <Box style={{
+      width: '100%',
+      height: '55px',
+      marginBottom: '10px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
       border: withBorders ? '1px solid black' : 'none',
       fontFamily: 'Arial, sans-serif',
       fontWeight: 'bold',
@@ -99,8 +99,8 @@ const GameInput = ({ moves, addMove, frameIndex }) => {
               key = '';
               break
           }
-          const style = frameIndex > i ? { color: 'grey' } : {}
-          return (<Text size={8} style={{ ...style, fontSize: '20px' }}>{key}</Text>)
+          const style = frameIndex > i + 1 ? { color: 'grey' } : {}
+          return (<Text size={8} style={{ ...style, fontSize: '20px' }} key={i}>{key}</Text>)
         })}
       </Box>
     </>

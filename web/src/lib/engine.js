@@ -58,11 +58,11 @@ export async function executeLevel(address, levelName, moves) {
     const script = `
         import BlindNinjaCore from ${BlindNinjaCore}
         import BlindNinjaLevel from ${BlindNinjaCore}
-        
+
         pub fun main(address: Address, levelName: String, moveSequence: [String]): AnyStruct {
             let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
             level.initializeLevel()
-            
+
             let levelSaveState: @BlindNinjaCore.LevelSaveState <- BlindNinjaCore.createLevelSaveState(
                 address: address,
                 levelName: levelName,
@@ -75,7 +75,7 @@ export async function executeLevel(address, levelName, moves) {
             let saveState: &BlindNinjaCore.LevelSaveState = &levelSaveState as &BlindNinjaCore.LevelSaveState
             let ticks: [BlindNinjaCore.LevelResult] = level.executeFullLevel(level: saveState)
             destroy levelSaveState
-            
+
             return ticks
         }
     `
@@ -124,7 +124,7 @@ export async function getDetailedGameInfo(address, levelName) {
     const script = `
         import BlindNinjaCore from ${BlindNinjaCore}
         import BlindNinjaLevel from ${BlindNinjaCore}
-        
+
         pub fun addTypesToArray(_ objects: [AnyStruct]): [{String: AnyStruct}] {
             let results: [{String: AnyStruct}] = []
             for o in objects {
@@ -136,36 +136,36 @@ export async function getDetailedGameInfo(address, levelName) {
             }
             return results
         }
-        
+
         pub fun addTypesToGameObjects(_ map: {Int: {BlindNinjaCore.GameObject}}): {Int: AnyStruct} {
             let newMap: {Int: AnyStruct} = {}
             for key in map.keys {
-            let nestedObj: {String: AnyStruct} = {}
-            nestedObj["type"] = map[key]!.getType()
-            nestedObj["data"] = map[key]!
-            newMap[key] = nestedObj
+                let nestedObj: {String: AnyStruct} = {}
+                nestedObj["type"] = map[key]!.getType()
+                nestedObj["data"] = map[key]!
+                newMap[key] = nestedObj
             }
             return newMap
         }
-        
+
         pub fun addTypeToMap(_ mapObj: BlindNinjaCore.Map): {String: AnyStruct} {
             let newMap: {String: AnyStruct} = {
-            "data": mapObj,
-            "type": mapObj.getType()
+                "data": mapObj,
+                "type": mapObj.getType()
             }
             return newMap
         }
-        
+
         pub fun main(address: Address, levelName: String): AnyStruct {
             let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
             level.initializeLevel()
             let activeLevel = level.getInitialLevel()
-        
+
             let mechanics = level.mechanics
             let visuals = level.visuals
             let gameObjects = activeLevel.gameObjects
             let winConditions = level.winConditions
-        
+
             return {
                 "name": level.name,
                 "visuals": addTypesToArray(level.visuals),
@@ -183,8 +183,56 @@ export async function getDetailedGameInfo(address, levelName) {
             arg(levelName, t.String)
         ]
     })
-    
+
     console.log('Detailed game info is', result)
 
     return result
+}
+
+export async function fetchRemixContracts(gameDetailsResult) {
+
+    const contracts = {}
+
+    function addToContracts(type) {
+        const address = type.split('.')[1]
+        const name = type.split('.')[2]
+        if (!(address in contracts)) {
+            contracts[address] = {}
+        }
+        contracts[address][name] = ''
+    }
+
+    // gameObjects
+    for (const key in gameDetailsResult.gameObjects) {
+        addToContracts(gameDetailsResult.gameObjects[key].type.typeID)
+    }
+
+    // map
+    addToContracts(gameDetailsResult.map.type.typeID)
+
+    // mechanics
+    for (const key in gameDetailsResult.mechanics) {
+        addToContracts(gameDetailsResult.mechanics[key].type.typeID)
+    }
+
+    // visuals
+    for (const key in gameDetailsResult.visuals) {
+        addToContracts(gameDetailsResult.visuals[key].type.typeID)
+    }
+
+    // winConditions
+    for (const key in gameDetailsResult.winConditions) {
+        addToContracts(gameDetailsResult.winConditions[key].type.typeID)
+    }
+
+    for (const address in contracts) {
+        const account = await fcl.account(address)
+        for (const contract in contracts[address]) {
+            contracts[address][contract] = account.contracts[contract]
+        }
+    }
+
+    console.log('fetchRemixContracts', contracts)
+
+    return contracts
 }
