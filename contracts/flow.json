@@ -5,8 +5,8 @@
 		"BlindNinjaLevel": "contracts/BlindNinjaLevel.cdc",
 		"BlindNinjaMechanic": "contracts/BlindNinjaMechanic.cdc",
 		"BlindNinjaWinCondition": "contracts/BlindNinjaWinCondition.cdc",
-		"CatchTheFlagLevel": "contracts/CatchTheFlagLevel.cdc",
-		"CenteredCameraMechanic": "contracts/CenteredCameraMechanic.cdc",
+		"CatchTheFlagLevel": "contracts/Levels/CatchTheFlagLevel.cdc",
+		"CenteredCameraMechanic": "contracts/GameMechanics/CenteredCameraMechanic.cdc",
 		"ExampleNFT": {
 			"source": "",
 			"aliases": {
@@ -19,21 +19,21 @@
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
-		"Flag": "contracts/Flag.cdc",
+		"Flag": "contracts/GameObjects/Flag.cdc",
 		"FlowToken": {
 			"source": "",
 			"aliases": {
 				"emulator": "0ae53cb6e3f42a79"
 			}
 		},
-		"FogLevel": "contracts/FogLevel.cdc",
+		"FogLevel": "contracts/Levels/FogLevel.cdc",
 		"FungibleToken": {
 			"source": "",
 			"aliases": {
 				"emulator": "ee82856bf20e2aa6"
 			}
 		},
-		"IntroLevel": "contracts/IntroLevel.cdc",
+		"IntroLevel": "contracts/Levels/IntroLevel.cdc",
 		"MetadataViews": {
 			"source": "contracts/MetadataViews.cdc",
 			"aliases": {
@@ -52,25 +52,25 @@
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
-		"Ninja": "contracts/Ninja.cdc",
-		"NinjaMovementMechanic": "contracts/NinjaMovementMechanic.cdc",
-		"NinjaTouchGoalWinCondition": "contracts/NinjaTouchGoalWinCondition.cdc",
+		"Ninja": "contracts/GameObjects/Ninja.cdc",
+		"NinjaMovementMechanic": "contracts/GameMechanics/NinjaMovementMechanic.cdc",
+		"NinjaTouchGoalWinCondition": "contracts/WinConditions/NinjaTouchGoalWinCondition.cdc",
 		"NonFungibleToken": {
 			"source": "",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
-		"SpiralMovementMechanic": "contracts/SpiralMovementMechanic.cdc",
+		"SpiralMovementMechanic": "contracts/GameMechanics/SpiralMovementMechanic.cdc",
 		"ViewResolver": {
 			"source": "",
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
-		"Wall": "contracts/Wall.cdc",
-		"WallMechanic": "contracts/WallMechanic.cdc",
-		"WallsLevel": "contracts/WallsLevel.cdc"
+		"Wall": "contracts/GameObjects/Wall.cdc",
+		"WallMechanic": "contracts/GameMechanics/WallMechanic.cdc",
+		"WallsLevel": "contracts/Levels/WallsLevel.cdc"
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -109,18 +109,18 @@
 				"BlindNinjaLevel",
 				"BlindNinjaMechanic",
 				"BlindNinjaWinCondition",
-				"CatchTheFlagLevel",
 				"CenteredCameraMechanic",
+				"NinjaMovementMechanic",
+				"SpiralMovementMechanic",
+				"WallMechanic",
 				"Flag",
+				"Ninja",
+				"Wall",
+				"CatchTheFlagLevel",
 				"FogLevel",
 				"IntroLevel",
-				"Ninja",
-				"NinjaMovementMechanic",
-				"NinjaTouchGoalWinCondition",
-				"SpiralMovementMechanic",
-				"Wall",
-				"WallMechanic",
-				"WallsLevel"
+				"WallsLevel",
+				"NinjaTouchGoalWinCondition"
 			]
 		},
 		"testnet": {
