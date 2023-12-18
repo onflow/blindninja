@@ -1,6 +1,7 @@
 'use client'
 
 import { useParams  } from 'next/navigation'
+import { Container } from '@radix-ui/themes'
 
 import * as fcl from "@onflow/fcl"
 
@@ -18,9 +19,11 @@ export default function Page() {
   let levelName = params['levelName']
 
   return (
-    <Game
-        address={address}
-        levelName={levelName}
-    />
+    <Container py="4" size="4">
+      <Game
+          address={address}
+          levelName={levelName}
+      />
+    </Container>
   )
 }

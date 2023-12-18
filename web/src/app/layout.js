@@ -1,4 +1,4 @@
-import { Theme, ThemePanel, Flex, Container } from '@radix-ui/themes'
+import { Theme, Flex } from '@radix-ui/themes'
 import '@radix-ui/themes/styles.css'
 import './globals.css'
 
@@ -19,9 +19,7 @@ export default function RootLayout({ children }) {
           <Theme accentColor="grass" radius="large">
           <Flex direction="column" style={{ height: '100vh'}}>
             <Navbar/>
-            <Container py="4" size="4">
-              {children}
-            </Container>
+            {children}
           </Flex>
           {/* <ThemePanel /> */}
           </Theme>
