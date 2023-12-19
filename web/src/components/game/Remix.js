@@ -151,16 +151,16 @@ const Remix = ({ gameDetails, contracts }) => {
                                             />
 
                                             <Flex gap="3" mt="4" justify="end">
-                                            <Dialog.Close style={{ cursor: 'pointer' }}>
-                                                <Button variant="soft">
-                                                    Cancel
-                                                </Button>
-                                            </Dialog.Close>
-                                            <Dialog.Close style={{ cursor: 'pointer' }}>
-                                                <Button variant="soft" onClick={() => updateCode(address, name)}>
-                                                    Confirm
-                                                </Button>
-                                            </Dialog.Close>
+                                                <Dialog.Close style={{ cursor: 'pointer' }}>
+                                                    <Button variant="soft">
+                                                        Cancel
+                                                    </Button>
+                                                </Dialog.Close>
+                                                <Dialog.Close style={{ cursor: 'pointer' }}>
+                                                    <Button variant="soft" onClick={() => updateCode(address, name)}>
+                                                        Confirm
+                                                    </Button>
+                                                </Dialog.Close>
                                             </Flex>
                                         </Dialog.Content>
                                     </Dialog.Root>
