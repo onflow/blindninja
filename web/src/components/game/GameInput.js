@@ -2,10 +2,9 @@
 
 import { Flex, Box, Text} from '@radix-ui/themes'
 import { useEffect } from 'react';
-import { useTheme } from 'next-themes'
 
-const ArrowBox = ({ children, withBorders, isDarkMode }) => {
-  const bgColor = isDarkMode ? '#333' : '#dfdfdf'
+const ArrowBox = ({ children, withBorders }) => {
+  const bgColor = '#dfdfdf'
   return (
     <Box style={{
       width: '100%',
@@ -18,6 +17,7 @@ const ArrowBox = ({ children, withBorders, isDarkMode }) => {
       fontFamily: 'Arial, sans-serif',
       fontWeight: 'bold',
       backgroundColor: withBorders ? bgColor : '',
+      color: 'black',
       borderRadius: '10px'
     }}>
       {children}
@@ -26,8 +26,6 @@ const ArrowBox = ({ children, withBorders, isDarkMode }) => {
 }
 
 const GameInput = ({ moves, addMove, frameIndex }) => {
-  const { resolvedTheme } = useTheme()
-  const isDarkMode = !resolvedTheme || resolvedTheme === 'dark'
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -70,14 +68,14 @@ const GameInput = ({ moves, addMove, frameIndex }) => {
   return (
     <>
       <Flex justify="center" gap="3">
-        <ArrowBox withBorders={false} isDarkMode={isDarkMode}></ArrowBox>
-        <ArrowBox withBorders={true} isDarkMode={isDarkMode}>W ↑</ArrowBox>
-        <ArrowBox withBorders={false} isDarkMode={isDarkMode}></ArrowBox>
+        <ArrowBox withBorders={false}></ArrowBox>
+        <ArrowBox withBorders={true}>W ↑</ArrowBox>
+        <ArrowBox withBorders={false}></ArrowBox>
       </Flex>
       <Flex style={{ marginTop: '-14px' }} justify="center" gap="2">
-        <ArrowBox withBorders={true} isDarkMode={isDarkMode}>← A</ArrowBox>
-        <ArrowBox withBorders={true} isDarkMode={isDarkMode}>S ↓</ArrowBox>
-        <ArrowBox withBorders={true} isDarkMode={isDarkMode}>D →</ArrowBox>
+        <ArrowBox withBorders={true}>← A</ArrowBox>
+        <ArrowBox withBorders={true}>S ↓</ArrowBox>
+        <ArrowBox withBorders={true}>D →</ArrowBox>
       </Flex>
       <Box style={{ height: "80px", display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "wrap", maxWidth: "200px" }}>
         {moves.split('').map((move, i) => {

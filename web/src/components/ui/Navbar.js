@@ -11,7 +11,7 @@ const Navbar = () => {
                     <a href='/'>
                         <Heading>🥷 Blind Ninja</Heading>
                     </a>
-                    <Text>v0.1.2</Text>
+                    <Text>v0.1.3</Text>
                 </Flex>
                 <Badge ml="3" variant="surface">Testnet</Badge>
                 <Flex mr="2" grow="1" gap="4" justify="end" align="center">

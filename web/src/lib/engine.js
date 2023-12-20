@@ -1,6 +1,6 @@
 import * as fcl from "@onflow/fcl"
 
-const BlindNinjaCore = "0xbe46c97f5d5fdab9"
+export const BlindNinjaCoreContractAddress = "0xbe46c97f5d5fdab9"
 
 function renderFrame(frame) {
     var board = new Array(Number(frame.map.viewWidth))
@@ -25,8 +25,8 @@ function renderFrame(frame) {
 
 export async function getInitialBoard(address, levelName) {
     const script = `
-        import BlindNinjaCore from ${BlindNinjaCore}
-        import BlindNinjaLevel from ${BlindNinjaCore}
+        import BlindNinjaCore from ${BlindNinjaCoreContractAddress}
+        import BlindNinjaLevel from ${BlindNinjaCoreContractAddress}
 
         pub fun main(address: Address, levelName: String): AnyStruct {
             let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
@@ -56,8 +56,8 @@ export async function getInitialBoard(address, levelName) {
 
 export async function executeLevel(address, levelName, moves) {
     const script = `
-        import BlindNinjaCore from ${BlindNinjaCore}
-        import BlindNinjaLevel from ${BlindNinjaCore}
+        import BlindNinjaCore from ${BlindNinjaCoreContractAddress}
+        import BlindNinjaLevel from ${BlindNinjaCoreContractAddress}
 
         pub fun main(address: Address, levelName: String, moveSequence: [String]): AnyStruct {
             let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
@@ -122,8 +122,8 @@ export async function executeLevel(address, levelName, moves) {
 
 export async function getDetailedGameInfo(address, levelName) {
     const script = `
-        import BlindNinjaCore from ${BlindNinjaCore}
-        import BlindNinjaLevel from ${BlindNinjaCore}
+        import BlindNinjaCore from ${BlindNinjaCoreContractAddress}
+        import BlindNinjaLevel from ${BlindNinjaCoreContractAddress}
 
         pub fun addTypesToArray(_ objects: [AnyStruct]): [{String: AnyStruct}] {
             let results: [{String: AnyStruct}] = []
