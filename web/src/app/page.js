@@ -98,7 +98,7 @@ export default function Home() {
               Any developer (or player) can deploy their smart contracts on-chain and play their resulting game directly on this website.
               <br/>
               <br />
-              The different types of smart contract types that make up a level are the following:          
+              The different types of smart contract types that make up a level are the following:
             </Text>
             <br />
             <br />
@@ -111,7 +111,7 @@ export default function Home() {
                   </Text>
                   <br />
                   <Text size="3" width="20px">
-                    The visual representation of an object on a level's 2D gameboard.
+                    The visual representation of an object on a level&apos;s 2D gameboard.
                   </Text>
                 </Box>
                 <Box style={{ width: '40%' }}>
@@ -133,7 +133,7 @@ export default function Home() {
                 </Box>
                 <Box style={{ width: '40%' }}>
                   <Image src="/images/GameMechanics.png" width={"300"} height={"100"} />
-                  <Text  size="1" >The <Link href="https://github.com/onflow/blindninja/blob/main/contracts/contracts/GameMechanics/NinjaMovementMechanic.cdc" target='_blank'>NinjaMovementMechanic</Link> allows the ninja to move from a player's keypress</Text>                  
+                  <Text  size="1" >The <Link href="https://github.com/onflow/blindninja/blob/main/contracts/contracts/GameMechanics/NinjaMovementMechanic.cdc" target='_blank'>NinjaMovementMechanic</Link> allows the ninja to move from a player&apos;s keypress</Text>
                 </Box>
               </Flex>
               <br />
@@ -145,7 +145,7 @@ export default function Home() {
                   </Text>
                   <br />
                   <Text size="3" width="20px">
-                    Win conditions assess the game's current state to determine if a player has successfully completed a level
+                    Win conditions assess the game&apos;s current state to determine if a player has successfully completed a level
                   </Text>
                 </Box>
                 <Box style={{ width: '40%' }}>
@@ -162,7 +162,7 @@ export default function Home() {
                   </Text>
                   <br />
                   <Text size="3" width="20px">
-                    A level is a composition of game objects, game mechanics, and win conditions. A level can also hold state and logic that determines how it is executed, not limited to the functionality within it's game's mechanics and objects.
+                    A level is a composition of game objects, game mechanics, and win conditions. A level can also hold state and logic that determines how it is executed, not limited to the functionality within it&apos;s game&apos;s mechanics and objects.
                   </Text>
                 </Box>
                 <Box style={{ width: '40%' }}>
