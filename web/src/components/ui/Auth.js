@@ -72,7 +72,9 @@ const Auth = () => {
         return (
             <Dialog.Root>
                 <Dialog.Trigger>
-                    <Button size="2" variant="soft">Connect Wallet</Button>
+                    <Button size="2" variant="soft" style={{ cursor: 'pointer' }}>
+                        Connect Wallet
+                    </Button>
                 </Dialog.Trigger>
 
                 <Dialog.Content style={{ maxWidth: 400 }}>

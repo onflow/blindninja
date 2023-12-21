@@ -184,6 +184,15 @@ export async function getDetailedGameInfo(address, levelName) {
         ]
     })
 
+    result.level = [{
+        'type': {
+            'typeID': 'A.' + address.replace('0x', '') + '.' + levelName
+        },
+        'data': {
+            'name': result.name,
+        }
+    }]
+
     console.log('Detailed game info is', result)
 
     return result
@@ -201,6 +210,9 @@ export async function fetchRemixContracts(gameDetailsResult) {
         }
         contracts[address][name] = ''
     }
+
+    // level
+    addToContracts(gameDetailsResult.level[0].type.typeID)
 
     // gameObjects
     for (const key in gameDetailsResult.gameObjects) {
