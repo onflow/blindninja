@@ -1,30 +1,25 @@
 'use client'
 
-import { Flex, Box, Text, Button, Link, Container } from '@radix-ui/themes'
+import { Flex, Box, Text, Button, Link, Container, Card, Separator } from '@radix-ui/themes'
 import Image from "next/image"
 import { useTheme } from 'next-themes';
 
 function InfoBox({ title, subtitle, img, ctaButtonText, cta, isDarkMode }) {
   return (
-    <Box width={"350px"} style={{ backgroundColor: '#F5F5F5', borderRadius: '15px', color: '#000', width: '250px', height: '250px', paddingTop: '16px', paddingBottom: '12px', textAlign: 'center', border: '1px solid #000' }}>
-      <Text size="6" weight={"bold"} align={"center"}>{title}</Text>
-      <br />
-      <br />
-      <Text size="9">{img}</Text>
-      <br />
-      <br />
-      <Text size="4" style={{
-        padding: '20px',
-        width: '236px'
-      }}>{subtitle}</Text>
-      {
-        cta && (
-          <>
-            <Button style={{marginTop: '16px'}} onClick={() => { cta() }}>{ ctaButtonText }</Button>
-          </>
-        )
-      }
-    </Box>
+    <Card variant="surface" color="gray" style={{ borderRadius: '15px', width: '250px', height: '250px', paddingTop: '3px', paddingBottom: '3px', textAlign: 'center', border: '1px solid #000' }}>
+      <Flex direction="column" gap="5">
+        <Text size="6" weight={"bold"} align={"center"}>{title}</Text>
+        <Text size="9">{img}</Text>
+        <Text size="4">{subtitle}</Text>
+        {
+          cta && (
+            <Box>
+              <Button onClick={() => { cta() }}>{ ctaButtonText }</Button>
+            </Box>
+          )
+        }
+      </Flex>
+    </Card>
   )
 }
 
@@ -34,9 +29,10 @@ export default function Home() {
   return (
     <>
       <div>
-        <Image src='/images/BlindNinja-BG.png' width="800" height="100" style={{ width: '100%', height: '500px', objectFit: 'cover', objectPosition: 'top', marginTop: '-9px' }} />
-        <Box style={{ position: 'absolute', top: '46px', width: '100vw', height: '300px', background: 'linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%)' }}></Box>
-        <Text size="9" weight={"bold"} align={"center"} style={{ position: 'absolute', top: '105px', left: '50%', transform: 'translate(-50%, -50%)', fontFamily: 'fantasy', color: '#eee' }}>Blind Ninja</Text>
+        <Image src='/images/BlindNinja-BG.png' width="800" height="100" style={{ width: '100%', height: '500px', objectFit: 'cover', objectPosition: 'top'}} />
+        <Box style={{ position: 'absolute', top: '55px', width: '100%', height: '300px', background: 'linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%)' }}></Box>
+        {/* <Text size="9" weight={"bold"} align={"center"} style={{ position: 'absolute', top: '105px', left: '50%', transform: 'translate(-50%, -50%)', fontFamily: 'fantasy', color: '#eee' }}>Blind Ninja</Text> */}
+        <Image style={{ position: 'absolute', top: '-65px', left: '0', right: '0', marginLeft: 'auto', marginRight: 'auto'}} src='/images/logo.png' width="300" height="300" />
         <Flex direction={"column"} style={{ marginTop: '-100px', textAlign: 'center' }}>
           <Flex direction={"row"} style={{ paddingBottom: '60px', justifyContent: 'center', zIndex: "10" }} gap={"8"} >
             <InfoBox
@@ -67,26 +63,26 @@ export default function Home() {
             <Image width="30" height="30" src='/images/flow-logo.png'></Image>
           </Flex>
           <Container size="2" gap="5" style={{ padding: '60px 0px', paddingBottom: '40px', textAlign: 'center' }}>
-            <Box style={{ backgroundColor: '#F5F5F5', color: '#000', borderRadius: '15px', padding: '40px 30px', border: '1px solid #000' }}>
-              <Text size="5" id="levels">Select a Level to Play</Text>
-              <br />
-              <br />
-              <hr />
-              <Flex direction="column" gap="4" mt="5" style={{ textAlign: 'center' }}>
-                <Link size="4" href="/0x5a2170a24ca5da66/IntroLevel">
-                  <b>IntroLevel</b> by 0x5a2170a24ca5da66
-                </Link>
-                <Link size="4" href="/0x5a2170a24ca5da66/WallsLevel">
-                  <b>WallsLevel</b> by 0x5a2170a24ca5da66
-                </Link>
-                <Link size="4" href="/0x5a2170a24ca5da66/FogLevel">
-                  <b>FogLevel</b> by 0x5a2170a24ca5da66
-                </Link>
-                <Link size="4" href="/0x5a2170a24ca5da66/CatchTheFlagLevel">
-                  <b>CatchTheFlagLevel</b> by 0x5a2170a24ca5da66
-                </Link>
+            <Card variant="surface" color="gray" style={{ borderRadius: '15px', padding: '20px 30px', border: '1px solid #000' }}>
+              <Flex direction="column" align="center" gap="4">
+                <Text size="5" id="levels">Select a Level to Play</Text>
+                <Separator size="4"/>
+                <Flex direction="column" gap="4" mt="3" style={{ textAlign: 'center' }}>
+                  <Link size="4" href="/0x5a2170a24ca5da66/IntroLevel">
+                    <b>IntroLevel</b> by 0x5a2170a24ca5da66
+                  </Link>
+                  <Link size="4" href="/0x5a2170a24ca5da66/WallsLevel">
+                    <b>WallsLevel</b> by 0x5a2170a24ca5da66
+                  </Link>
+                  <Link size="4" href="/0x5a2170a24ca5da66/FogLevel">
+                    <b>FogLevel</b> by 0x5a2170a24ca5da66
+                  </Link>
+                  <Link size="4" href="/0x5a2170a24ca5da66/CatchTheFlagLevel">
+                    <b>CatchTheFlagLevel</b> by 0x5a2170a24ca5da66
+                  </Link>
+                </Flex>
               </Flex>
-            </Box>
+            </Card>
             <br />
           </Container>
           <Container size="3" gap="2" style={{ padding: '0px 0px', textAlign: 'left' }}>

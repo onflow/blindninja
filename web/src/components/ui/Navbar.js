@@ -6,12 +6,12 @@ import Auth from './Auth'
 const Navbar = () => {
     return (
         <>
-            <Flex p="3" align="center">
+            <Flex p="3" align="center" style={{ height: '55px' }}>
                 <Flex gap="2" ml="2" align="baseline">
                     <a href='/'>
                         <Heading>🥷 Blind Ninja</Heading>
                     </a>
-                    <Text>v0.2.0</Text>
+                    <Text>v0.2.1</Text>
                 </Flex>
                 <Badge ml="3" variant="surface">Testnet</Badge>
                 <Flex mr="2" grow="1" gap="4" justify="end" align="center">
