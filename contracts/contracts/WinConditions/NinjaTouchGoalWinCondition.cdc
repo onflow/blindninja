@@ -1,15 +1,15 @@
 import "BlindNinjaCore"
 import "BlindNinjaWinCondition"
 
-pub contract NinjaTouchGoalWinCondition: BlindNinjaWinCondition {
-  pub struct WinCondition: BlindNinjaCore.WinCondition {
+access(all) contract NinjaTouchGoalWinCondition: BlindNinjaWinCondition {
+  access(all) struct WinCondition: BlindNinjaCore.WinCondition {
     access(all) let name: String
     access(all) let description: String
     access(all) let ninjaID: UInt64
     access(all) let goalID: UInt64
 
-    pub fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool {
-      let collisionPoints = level.gameboard.newCollisionPoints
+    access(all) fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool {
+      let collisionPoints: [[Int]] = level.gameboard.getNewCollisionPoints()
       // get collision ids at the new collision points
       for point in collisionPoints {
         let ids: [UInt64] = level.gameboard.getIDsAtPoint(point)

@@ -1,16 +1,16 @@
 import "BlindNinjaCore"
 import "BlindNinjaMechanic"
 
-pub contract NinjaMovementMechanic: BlindNinjaMechanic {
-  pub struct Mechanic: BlindNinjaCore.GameMechanic {
-    pub let name: String
-    pub let description: String
-    pub let ninjaID: UInt64
+access(all) contract NinjaMovementMechanic: BlindNinjaMechanic {
+  access(all) struct Mechanic: BlindNinjaCore.GameMechanic {
+    access(all) let name: String
+    access(all) let description: String
+    access(all) let ninjaID: UInt64
 
-    pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
+    access(all) fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
       let curSequence = level.sequence[level.curSequenceIndex]!
-      let prevNinja = level.gameObjects[Int(self.ninjaID)]!
-      let newNinja = level.gameObjects[Int(self.ninjaID)]!
+      let prevNinja: {BlindNinjaCore.GameObject} = level.getGameObject(Int(self.ninjaID))!
+      let newNinja: {BlindNinjaCore.GameObject} = level.getGameObject(Int(self.ninjaID))!
       let existingPoint = newNinja.referencePoint
       if (curSequence == "ArrowDown") {
         newNinja.setReferencePoint([existingPoint[0]!, existingPoint[1]! + 1])

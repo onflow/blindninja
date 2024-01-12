@@ -1,6 +1,6 @@
 import "BlindNinjaCore"
 
-pub contract interface BlindNinjaLevel {
+access(all) contract interface BlindNinjaLevel {
   access(all) var name: String
 
   // The map and gameobjects can and likely will change during
@@ -27,13 +27,32 @@ pub contract interface BlindNinjaLevel {
 
   access(all) var gameboard: BlindNinjaCore.GameBoard
 
+  // Getters for all above fields
+  access(all) fun getGameboard(): BlindNinjaCore.GameBoard {
+    return self.gameboard
+  }
+
+  access(all) fun getState(): {String: AnyStruct} {
+    return self.state
+  }
+  
+  access(all) fun getMap(): BlindNinjaCore.Map {
+    return self.map
+  }
+
+  access(all) fun getGameObjects(): {Int: {BlindNinjaCore.GameObject}} {
+    return self.gameObjects
+  }
+
   // Default implementation of providing the initial level
   // state for a UI to show before a player enters in a sequence
   // to execute the game with.
   access(all) fun getInitialLevel(): BlindNinjaCore.LevelResult {
+    let map: BlindNinjaCore.Map = self.map
+    let gameObjects: {Int: {BlindNinjaCore.GameObject}} = self.gameObjects
     let activeLevel = BlindNinjaCore.LevelResult(
-      map: self.map,
-      gameObjects: self.gameObjects,
+      map: map,
+      gameObjects: gameObjects,
       hasWonGame: false
     )
     return activeLevel
@@ -51,17 +70,17 @@ pub contract interface BlindNinjaLevel {
       hasWon = hasWon || self.tickLevel(level: level)
       level.incrementSequenceIndex()
       let curResult = BlindNinjaCore.LevelResult(
-        map: level.map,
-        gameObjects: level.gameObjects,
+        map: level.getMap(),
+        gameObjects: level.getGameObjects(),
         hasWonGame: hasWon
       )
       level.addResult(curResult)
       if (hasWon) {
-        return level.tickResults
+        return level.getTickResults()
       }
       i = i + 1
     }
-    return level.tickResults
+    return level.getTickResults()
   }
 
   // Returns true if the game has been won.
@@ -86,7 +105,7 @@ pub contract interface BlindNinjaLevel {
 
   access(all) fun addObjectsToGameBoard() {
     for object in self.gameObjects.values {
-      self.gameboard.add(object)
+      self.gameboard.add(object!)
     }
   }
 

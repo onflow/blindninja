@@ -1,11 +1,11 @@
-pub contract BlindNinjaCore {
+access(all) contract BlindNinjaCore {
 
   // Interface for defining the map structure in the game.
-  pub struct Map {
-    pub let anchorX: Int
-    pub let anchorY: Int
-    pub let viewWidth: Int
-    pub let viewHeight: Int
+  access(all) struct Map {
+    access(all) let anchorX: Int
+    access(all) let anchorY: Int
+    access(all) let viewWidth: Int
+    access(all) let viewHeight: Int
 
     init(anchorX: Int, anchorY: Int, viewWidth: Int, viewHeight: Int) {
       self.anchorX = anchorX
@@ -16,47 +16,51 @@ pub contract BlindNinjaCore {
   }
 
   // Interface for game objects within the game environment.
-  pub struct interface GameObject {
-    pub var id: UInt64
+  access(all) struct interface GameObject {
+    access(all) var id: UInt64
     access(all) var name: String
     access(all) var description: String
-    pub var type: String
-    pub var referencePoint: [Int]
-    pub var display: String
+    access(all) var type: String
+    access(all) var referencePoint: [Int]
+    access(all) var display: String
 
     // Function to set a new reference point for the game object.
-    pub fun setReferencePoint(_ newReferencePoint: [Int]) {
+    access(all) fun setReferencePoint(_ newReferencePoint: [Int]) {
       self.referencePoint = newReferencePoint
     }
 
-    pub fun setDisplay(_ newDisplay: String) {
+    access(all) fun setDisplay(_ newDisplay: String) {
       self.display = newDisplay
     }
   }
 
   // Interface for game mechanics which can affect the game state.
-  pub struct interface GameMechanic {
+  access(all) struct interface GameMechanic {
     access(all) let name: String
     access(all) let description: String
     access(all) fun tick(_ level: &BlindNinjaCore.LevelSaveState)
   }
 
   // Interface for defining conditions to win the game.
-  pub struct interface WinCondition {
+  access(all) struct interface WinCondition {
     access(all) let name: String
     access(all) let description: String
     access(all) fun check(_ level: &BlindNinjaCore.LevelSaveState): Bool
   }
 
   // Interface for visual elements within the game.
-  pub struct interface VisualElement {
+  access(all) struct interface VisualElement {
   }
 
   // Struct representing the game board, handling spatial arrangement of objects.
-  pub struct GameBoard {
+  access(all) struct GameBoard {
     // Map of x coordinate to y coordinate to object id
-    pub var board: {Int: {Int: [UInt64]}}
-    pub var newCollisionPoints: [[Int]]
+    access(all) var board: {Int: {Int: [UInt64]}}
+    access(all) var newCollisionPoints: [[Int]]
+
+    access(all) fun getNewCollisionPoints(): [[Int]] {
+      return self.newCollisionPoints
+    }
 
     access(self) fun addToBoard(_ gameObject: {GameObject}) {
       let referencePoint: [Int] = gameObject.referencePoint
@@ -71,7 +75,7 @@ pub contract BlindNinjaCore {
         column[y] = []
       }
       if (column[y]!.length > 0) {
-        self.newCollisionPoints.append(referencePoint)
+        self.newCollisionPoints.append((referencePoint))
       }
       column[y]!.append(gameObject.id)
       self.board[x] = column
@@ -95,24 +99,24 @@ pub contract BlindNinjaCore {
     }
 
     // Add the given gameobject to the gameboard
-    pub fun add(_ gameObject: {GameObject}?) {
+    access(all) fun add(_ gameObject: {GameObject}?) {
       if (gameObject != nil) {
         self.addToBoard(gameObject!)
       }
     }
 
     // Remove this object from the gameboard
-    pub fun remove(_ gameObject: {GameObject}?) {
+    access(all) fun remove(_ gameObject: {GameObject}) {
       if (gameObject != nil) {
         self.clearFromBoard(gameObject!)
       }
     }
 
-    pub fun clearCollisionPoints() {
+    access(all) fun clearCollisionPoints() {
       self.newCollisionPoints = []
     }
 
-    pub fun getIDsAtPoint(_ refPoint: [Int]): [UInt64] {
+    access(all) fun getIDsAtPoint(_ refPoint: [Int]): [UInt64] {
       return self.board[refPoint[0]!]![refPoint[1]!]!
     }
 
@@ -123,15 +127,19 @@ pub contract BlindNinjaCore {
   }
 
   // Struct to hold the result of a level in the game.
-  pub struct LevelResult {
-    pub let map: Map
-    pub let gameObjects: {Int: {GameObject}}
-    pub let hasWonGame: Bool
+  access(all) struct LevelResult {
+    access(all) let map: Map
+    access(all) let gameObjects: {Int: {GameObject}}
+    access(all) let hasWonGame: Bool
 
     init(map: Map, gameObjects: {Int: {GameObject}}, hasWonGame: Bool) {
       self.map = map
       self.gameObjects = gameObjects
       self.hasWonGame = hasWonGame
+    }
+
+    access(all) fun getGameObject(_ key: Int): {GameObject}? {
+      return self.gameObjects[key]
     }
   }
 
@@ -139,7 +147,7 @@ pub contract BlindNinjaCore {
   // gameplay at a later time, assuming a TX needs to batch a level into
   // multiple, or if we want multiple sequences to be submittable to
   // a single level.
-  pub resource LevelSaveState {
+  access(all) resource LevelSaveState {
     access(all) var levelAddress: Address
     access(all) var levelName: String
     access(all) var map: Map
@@ -149,6 +157,26 @@ pub contract BlindNinjaCore {
     access(all) let tickResults: [LevelResult]
     access(all) let sequence: [String]
     access(all) var curSequenceIndex: Int
+
+    access(all) fun getGameObject(_ id: Int): {GameObject}? {
+      return self.gameObjects[id]
+    }
+
+    access(all) fun getMap(): Map {
+      return self.map
+    }
+    
+    access(all) fun getGameObjects(): {Int: {GameObject}} {
+      return self.gameObjects
+    }
+
+    access(all) fun getTickResults(): [LevelResult] {
+      return self.tickResults
+    }
+
+    access(all) fun getState(_ key: String): AnyStruct? {
+      return self.state[key]
+    }
 
     access(all) fun incrementSequenceIndex() {
       self.curSequenceIndex = self.curSequenceIndex + 1
@@ -185,7 +213,7 @@ pub contract BlindNinjaCore {
   }
 
   // Function to create a new level save state.
-  pub fun createLevelSaveState(
+  access(all) fun createLevelSaveState(
     address: Address,
     levelName: String,
     map: Map,

@@ -8,7 +8,7 @@ import "SpiralMovementMechanic"
 
 // This composable level provides an easy way to create a BlindNinja
 // level using core blind ninja core interfaces as drivers within it.
-pub contract CatchTheFlagLevel: BlindNinjaLevel {
+access(all) contract CatchTheFlagLevel: BlindNinjaLevel {
   access(all) var name: String
   access(all) var map: BlindNinjaCore.Map
   access(all) var gameObjects: {Int: {BlindNinjaCore.GameObject}}

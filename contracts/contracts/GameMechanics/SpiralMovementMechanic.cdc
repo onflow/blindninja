@@ -1,35 +1,35 @@
 import "BlindNinjaCore"
 import "BlindNinjaMechanic"
 
-pub contract SpiralMovementMechanic: BlindNinjaMechanic {
-  pub struct Mechanic: BlindNinjaCore.GameMechanic {
-    pub let name: String
-    pub let description: String
-    pub let objectID: UInt64
-    pub let directions: [String]
+access(all) contract SpiralMovementMechanic: BlindNinjaMechanic {
+  access(all) struct Mechanic: BlindNinjaCore.GameMechanic {
+    access(all) let name: String
+    access(all) let description: String
+    access(all) let objectID: UInt64
+    access(all) let directions: [String]
 
-    pub fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
+    access(all) fun tick(_ level: &BlindNinjaCore.LevelSaveState) {
       let curSequence = level.sequence[level.curSequenceIndex]!
-      let prevObj = level.gameObjects[Int(self.objectID)]!
-      let newObj = level.gameObjects[Int(self.objectID)]!
+      let prevObj = level.getGameObject(Int(self.objectID))!
+      let newObj = level.getGameObject(Int(self.objectID))!
       let existingPoint = newObj.referencePoint
       
-      var dist: AnyStruct? = level.state["curDistanceTravelled"]
+      var dist: AnyStruct? = level.getState("curDistanceTravelled")
       if (dist == nil) {
         level.setState("curDistanceTravelled", 0)
       }
-      var distToReach: AnyStruct? = level.state["distanceToReach"]
+      var distToReach: AnyStruct? = level.getState("distanceToReach")
       if (distToReach == nil) {
         level.setState("distanceToReach", 3)
       }
-      var dirIndex: AnyStruct? = level.state["directionIndex"]
+      var dirIndex: AnyStruct? = level.getState("directionIndex")
       if (dirIndex == nil) {
         level.setState("directionIndex", 0)
       }
 
-      var curDistanceTravelled = level.state["curDistanceTravelled"]! as! Int
-      var distanceToReach = level.state["distanceToReach"]! as! Int
-      var directionIndex = level.state["directionIndex"]! as! Int
+      var curDistanceTravelled = level.getState("curDistanceTravelled")! as! Int
+      var distanceToReach = level.getState("distanceToReach")! as! Int
+      var directionIndex = level.getState("directionIndex")! as! Int
       
 
       if (curDistanceTravelled == distanceToReach) {

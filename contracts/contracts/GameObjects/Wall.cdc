@@ -1,14 +1,14 @@
 import "BlindNinjaCore"
 import "BlindNinjaGameObject"
 
-pub contract Wall: BlindNinjaGameObject {
-  pub struct GameObject: BlindNinjaCore.GameObject {
-    pub var name: String
-    pub var description: String
-    pub var id: UInt64
-    pub var type: String
-    pub var referencePoint: [Int]
-    pub var display: String
+access(all) contract Wall: BlindNinjaGameObject {
+  access(all) struct GameObject: BlindNinjaCore.GameObject {
+    access(all) var name: String
+    access(all) var description: String
+    access(all) var id: UInt64
+    access(all) var type: String
+    access(all) var referencePoint: [Int]
+    access(all) var display: String
 
     init(id: UInt64) {
       self.id = id

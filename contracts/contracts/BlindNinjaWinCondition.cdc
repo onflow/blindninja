@@ -1,5 +1,5 @@
 import "BlindNinjaCore"
 
-pub contract interface BlindNinjaWinCondition {
-  pub struct WinCondition: BlindNinjaCore.WinCondition {}
+access(all) contract interface BlindNinjaWinCondition {
+  access(all) struct interface WinCondition: BlindNinjaCore.WinCondition {}
 }

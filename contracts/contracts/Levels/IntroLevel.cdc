@@ -7,7 +7,7 @@ import "NinjaTouchGoalWinCondition"
 
 // This composable level provides an easy way to create a BlindNinja
 // level using core blind ninja core interfaces as drivers within it.
-pub contract IntroLevel: BlindNinjaLevel {
+access(all) contract IntroLevel: BlindNinjaLevel {
   access(all) var name: String
   access(all) var map: BlindNinjaCore.Map
   access(all) var gameObjects: {Int: {BlindNinjaCore.GameObject}}

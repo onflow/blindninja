@@ -1,17 +1,17 @@
 import "BlindNinjaCore"
 import "BlindNinjaLevel"
 
-pub fun main(address: Address, levelName: String, moveSequence: [String]): AnyStruct {
+access(all) fun main(address: Address, levelName: String, moveSequence: [String]): AnyStruct {
   let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
   level.initializeLevel()
 
   let levelSaveState: @BlindNinjaCore.LevelSaveState <- BlindNinjaCore.createLevelSaveState(
     address: address,
     levelName: levelName,
-    map: level.map,
-    gameObjects: level.gameObjects,
-    gameboard: level.gameboard,
-    state: level.state,
+    map: level.getMap(),
+    gameObjects: level.getGameObjects(),
+    gameboard: level.getGameboard(),
+    state: level.getState(),
     moveSequence: moveSequence,
   )
   let saveState: &BlindNinjaCore.LevelSaveState = &levelSaveState as &BlindNinjaCore.LevelSaveState

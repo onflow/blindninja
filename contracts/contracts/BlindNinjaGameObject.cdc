@@ -1,5 +1,5 @@
 import "BlindNinjaCore"
 
-pub contract interface BlindNinjaGameObject {
-  pub struct GameObject: BlindNinjaCore.GameObject {}
+access(all) contract interface BlindNinjaGameObject {
+  access(all) struct interface GameObject: BlindNinjaCore.GameObject {}
 }

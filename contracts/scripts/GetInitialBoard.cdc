@@ -1,7 +1,7 @@
 import "BlindNinjaCore"
 import "BlindNinjaLevel"
 
-pub fun main(address: Address, levelName: String): AnyStruct {
+access(all) fun main(address: Address, levelName: String): AnyStruct {
   let level: &BlindNinjaLevel = getAccount(address).contracts.borrow<&BlindNinjaLevel>(name: levelName)!
   level.initializeLevel()
   let activeLevel = level.getInitialLevel()

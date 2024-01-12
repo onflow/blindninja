@@ -122,29 +122,6 @@
 				"WallsLevel",
 				"NinjaTouchGoalWinCondition"
 			]
-		},
-		"testnet": {
-			"testnet-account": [
-				"BlindNinjaCore",
-				"BlindNinjaGameObject",
-				"BlindNinjaLevel",
-				"BlindNinjaMechanic",
-				"BlindNinjaWinCondition"
-			],
-			"testnet-samples-account": [
-				"CenteredCameraMechanic",
-				"Flag",
-				"FogLevel",
-				"IntroLevel",
-				"Ninja",
-				"NinjaMovementMechanic",
-				"NinjaTouchGoalWinCondition",
-				"Wall",
-				"WallMechanic",
-				"WallsLevel",
-				"SpiralMovementMechanic",
-				"CatchTheFlagLevel"
-			]
 		}
 	}
 }

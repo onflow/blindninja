@@ -1,7 +1,7 @@
 import "BlindNinjaCore"
 import "BlindNinjaLevel"
 
-pub fun addTypesToArray(_ objects: [AnyStruct]): [{String: AnyStruct}] {
+access(all) fun addTypesToArray(_ objects: [AnyStruct]): [{String: AnyStruct}] {
   let results: [{String: AnyStruct}] = []
   for o in objects {
     let cur: {String: AnyStruct} = {
@@ -13,7 +13,7 @@ pub fun addTypesToArray(_ objects: [AnyStruct]): [{String: AnyStruct}] {
   return results
 }
 
-pub fun addTypesToGameObjects(_ map: {Int: {BlindNinjaCore.GameObject}}): {Int: AnyStruct} {
+access(all) fun addTypesToGameObjects(_ map: {Int: {BlindNinjaCore.GameObject}}): {Int: AnyStruct} {
   let newMap: {Int: AnyStruct} = {}
   for key in map.keys {
     let nestedObj: {String: AnyStruct} = {}
