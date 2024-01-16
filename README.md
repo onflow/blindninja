@@ -2,6 +2,8 @@
 
 Welcome to BlindNinja, an innovative blockchain-based game that challenges players to navigate a ninja through various missions using on-chain logic. Every move and event is transparently and immutably recorded on the blockchain, creating a trustless and verifiable gaming experience.
 
+BlindNinja is playable and remixable at https://blindninja.vercel.app
+
 ## Table of Contents
 
 - [About BlindNinja](#about-blindninja)
